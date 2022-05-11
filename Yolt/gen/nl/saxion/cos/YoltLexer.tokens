@@ -1,0 +1,15 @@
+INT=1
+PRINT=2
+IDENTIFIER=3
+EQUALS=4
+INT_VALUE=5
+SEMICOLON=6
+PAREN_OPEN=7
+PAREN_CLOSE=8
+WS=9
+'int'=1
+'print'=2
+'='=4
+';'=6
+'('=7
+')'=8

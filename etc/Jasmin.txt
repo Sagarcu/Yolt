@@ -1,0 +1,39 @@
+Creating and doing variables.
+ldc (create new variable)
+ldcw_2 (create new double variable)
+istore(save int variable)
+iload(load int variable)
+iconst_0 (false)
+iconst_1 (true) (basically just int tho).
+
+iinc (load + saves variable, increase with set value) (2, 1). 
+
+
+Calculations:
+iadd (add 2 variables)
+isub (substract)
+imul (multiply)
+idiv 
+irem (get remainder)
+
+(these all all work with doubles, then you get dadd for example, or dsub or dmul)
+
+
+conversions:
+i2d (integer to double)
+
+
+Jumps
+(To create a point to jump to just type name without whitespace) startLoop
+
+ifeq (name) (if value is zero, jump to point. Else don't).
+goto (name) (Jump to end)
+
+
+
+
+
+>= if_icmpge (Can be useful to switch around though, depending on usecase)
+> if_icmpgt
+<< if_icmple
+< if_icmplt
