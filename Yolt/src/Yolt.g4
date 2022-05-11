@@ -1,17 +1,19 @@
 grammar Yolt;
 
-program: statement* EOF;
+program: function_decleration* EOF;
 
+//class_decleration: CLASS IDENTIFIER HAAKIE_OPEN function_decleration+ HAAKIE_CLOSE;
+function_decleration: FUNCTION IDENTIFIER PAREN_OPEN PAREN_CLOSE HAAKIE_OPEN statement* HAAKIE_CLOSE;
 
 int_declaration: INT IDENTIFIER EQUALS INT_VALUE SEMICOLON;
 int_addition: IDENTIFIER ADD EQUALS INT_VALUE SEMICOLON;
-
-class_decleration: CLASS IDENTIFIER HAAKIE_OPEN HAAKIE_CLOSE SEMICOLON;
 string_declaration: STRING IDENTIFIER EQUALS THING IDENTIFIER THING SEMICOLON;
 gold_decleration: GOLD IDENTIFIER EQUALS  GOLD_VALUE SEMICOLON;
 print_stmt: PRINT PAREN_OPEN THING IDENTIFIER THING PAREN_CLOSE SEMICOLON;
+for_loop: LOOP ;
 
-statement: int_declaration | print_stmt | string_declaration | gold_decleration | int_addition | class_decleration | 'ADD' expr;
+
+statement: for_loop | int_declaration | print_stmt | string_declaration | gold_decleration | int_addition | 'ADD' expr;
 
 expr: expr ('^') expr
     | expr ('*' | '/') expr
@@ -35,11 +37,15 @@ LOGIC_LOWER: '<';
 LOGIC_OR: '||';
 LOGIC_AND: '&&';
 
-CLASS: 'Class';
-GOLD: 'gold';
-STRING: 'string';
-INT: 'int';
-PRINT: 'print';
+CLASS: 'CLASS';
+LOOP: 'REPEAT';
+FUNCTION: 'FUNCTION';
+GOLD: 'GOLD';
+STRING: 'WORDS';
+INT: 'NUMBER';
+BOOLEAN: 'BOOL';
+PRINT: 'SPEAK';
+PROMPT: 'TALK';
 IDENTIFIER: [a-zA-Z]+;
 EQUALS: '=';
 INT_VALUE: [1-9][0-9]*;
@@ -52,5 +58,5 @@ HAAKIE_CLOSE: '}';
 THING: '"';
 COMMENT: '//*';
 
-WS: [\r\n\t ]+ -> skip;
+WS: [\r\n ]+ -> skip;
 
