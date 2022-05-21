@@ -87,8 +87,8 @@ PROMPT: 'TALK';
 RANDOM: 'RANDOM';
 EQUALS: '=';
 
-INT_VALUE: [1-9][0-9]* |[0];
-GOLD_VALUE: [1-9][0-9]*[G];
+INT_VALUE: [-]?[1-9][0-9]* |[0];
+GOLD_VALUE: [-]?[1-9][0-9]*[G];
 BOOLEAN_VALUE: 'FALSE' | 'TRUE';
 STRING_VALUE: '"'[a-zA-Z0-9,/!: ]+'"';
 
