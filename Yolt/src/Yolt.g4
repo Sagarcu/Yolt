@@ -17,8 +17,8 @@ prompt_input: PROMPT PAREN_OPEN PAREN_CLOSE;
 random_input: RANDOM PAREN_OPEN INT_VALUE PAREN_CLOSE;
 
 
-if_statement: IF PAREN_OPEN compare_values PAREN_CLOSE COLON BRACKET_OPEN statement* BRACKET_CLOSE else_if_statement* else_statement*;
-else_if_statement: ELSE_IF PAREN_OPEN compare_values PAREN_CLOSE COLON BRACKET_OPEN statement* BRACKET_CLOSE;
+if_statement: IF PAREN_OPEN compare_multiple_values PAREN_CLOSE COLON BRACKET_OPEN statement* BRACKET_CLOSE else_if_statement* else_statement*;
+else_if_statement: ELSE_IF PAREN_OPEN compare_multiple_values PAREN_CLOSE COLON BRACKET_OPEN statement* BRACKET_CLOSE;
 else_statement: ELSE COLON BRACKET_OPEN statement* BRACKET_CLOSE;
 return_statement: RETURN PAREN_OPEN IDENTIFIER PAREN_CLOSE SEMICOLON;
 

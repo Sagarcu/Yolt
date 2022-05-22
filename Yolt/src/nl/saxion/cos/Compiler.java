@@ -5,7 +5,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 
 /**
  * Compiles source code in a custom language into Jasmin and then assembles a
