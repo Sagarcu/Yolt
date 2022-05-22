@@ -1,18 +1,18 @@
 grammar Yolt;
 
-program: class_decleration? function_decleration* EOF ;
+application: class_declaration? function_declaration* EOF ;
 
 //TODO's:
 //FIX BUG WHERE YOU CAN ADD MULTIPLE NORMAL VALUES BEHIND EACH OTHER IN EXPRESSION (i i + 3 = 0) for example.
 
-class_decleration: CLASS IDENTIFIER PAREN_OPEN ((GOLD | INT | BOOLEAN | STRING) IDENTIFIER)*  PAREN_CLOSE BRACKET_OPEN function_decleration+ BRACKET_CLOSE;
-function_decleration: FUNCTION IDENTIFIER PAREN_OPEN (((GOLD | INT | BOOLEAN | STRING) IDENTIFIER) (COMMA ((GOLD | INT | BOOLEAN | STRING) IDENTIFIER))*)? PAREN_CLOSE BRACKET_OPEN statement* BRACKET_CLOSE;
+class_declaration: CLASS IDENTIFIER PAREN_OPEN ((GOLD | INT | BOOLEAN | STRING) IDENTIFIER)*  PAREN_CLOSE BRACKET_OPEN function_declaration+ BRACKET_CLOSE;
+function_declaration: FUNCTION IDENTIFIER PAREN_OPEN (((GOLD | INT | BOOLEAN | STRING) IDENTIFIER) (COMMA ((GOLD | INT | BOOLEAN | STRING) IDENTIFIER))*)? PAREN_CLOSE BRACKET_OPEN statement+ BRACKET_CLOSE;
 function_call: IDENTIFIER PAREN_OPEN (IDENTIFIER (COMMA IDENTIFIER)*)? PAREN_CLOSE SEMICOLON;
 
-int_declaration: INT IDENTIFIER EQUALS (INT_VALUE | prompt_input | random_input) SEMICOLON;
+int_declaration: INT IDENTIFIER EQUALS (INT_VALUE | prompt_input | random_input | expr*) SEMICOLON;
 boolean_declaration: BOOLEAN IDENTIFIER EQUALS (BOOLEAN_VALUE | prompt_input) SEMICOLON;
 string_declaration: STRING IDENTIFIER EQUALS ((STRING_VALUE) | prompt_input) SEMICOLON;
-gold_decleration: GOLD IDENTIFIER EQUALS (GOLD_VALUE | prompt_input) SEMICOLON;
+gold_declaration: GOLD IDENTIFIER EQUALS (GOLD_VALUE | prompt_input) SEMICOLON;
 prompt_input: PROMPT PAREN_OPEN PAREN_CLOSE;
 random_input: RANDOM PAREN_OPEN INT_VALUE PAREN_CLOSE;
 
@@ -37,13 +37,14 @@ compare_values: expr* (LOGIC_BIGGER | LOGIC_EQUAL | LOGIC_LOWER | LOGIC_UNEQUAL 
 print_stmt: PRINT PAREN_OPEN (IDENTIFIER |  STRING_VALUE) PAREN_CLOSE SEMICOLON;
 
 
-statement: function_call | return_statement | bool_assignment | int_addition | if_statement | boolean_declaration | do_while_loop | while_loop | int_declaration | print_stmt | string_declaration | gold_decleration | int_addition_short | 'ADD' expr | var_assignment | var_addition;
+statement: function_call | return_statement | bool_assignment | int_addition | if_statement | boolean_declaration | do_while_loop | while_loop | int_declaration | print_stmt | string_declaration | gold_declaration | int_addition_short | 'ADD' expr | var_assignment | var_addition;
 
-expr: (PAREN_OPEN expr PAREN_CLOSE)
-    | expr (POW | MOD) expr
-    | expr (MUL | DIV) expr
-    | expr (ADD | SUB) expr
-    | number
+expr: (PAREN_OPEN expr PAREN_CLOSE) # ParanExpression
+    | SUB expr                         # NegativeExpression
+    | left=expr (POW | MOD) right=expr # PowModExpression
+    | left=expr (MUL | DIV) right=expr # MulDivExpression
+    | left=expr (ADD | SUB) right=expr # AddSubExpression
+    | number # NumberExpression
     ;
 
 number: INT_VALUE | IDENTIFIER;
@@ -76,7 +77,7 @@ WHILE: 'WHILE';
 FUNCTION: 'FUNCTION';
 RETURN: 'RETURN';
 
-GOLD: 'GOLD';
+GOLD: 'COINS';
 STRING: 'WORDS';
 INT: 'NUMBER';
 BOOLEAN: 'BOOL';
@@ -89,6 +90,7 @@ EQUALS: '=';
 
 INT_VALUE: [-]?[1-9][0-9]* |[0];
 GOLD_VALUE: [-]?[1-9][0-9]*[G];
+COINS_VALUE: [-]?[1-9][0-9]*[G][_][-]?([0] |[1-9][0-9]?)[S][_][-]?([0] |[1-9][0-9]?)[B]; //5G_11S_6B;
 BOOLEAN_VALUE: 'FALSE' | 'TRUE';
 STRING_VALUE: '"'[a-zA-Z0-9,/!: ]+'"';
 

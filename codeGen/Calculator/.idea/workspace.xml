@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="34ef71a3-1361-4a45-a918-081c32ba92fa" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../../Yolt/src/nl/saxion/cos/DataType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Yolt/src/nl/saxion/cos/YoltCodeGenerator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Yolt/src/nl/saxion/cos/YoltLanguageListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/Yolt.interp" beforeDir="false" afterPath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/Yolt.interp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/Yolt.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/Yolt.tokens" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltBaseListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltBaseListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltBaseVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltBaseVisitor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltLexer.interp" beforeDir="false" afterPath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltLexer.interp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltLexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltLexer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltLexer.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltLexer.tokens" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltVisitor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Yolt/src/Yolt.g4" beforeDir="false" afterPath="$PROJECT_DIR$/../../Yolt/src/Yolt.g4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Yolt/src/nl/saxion/cos/Compiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../Yolt/src/nl/saxion/cos/Compiler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Yolt/testFiles/Fibonacci.exlang" beforeDir="false" afterPath="$PROJECT_DIR$/../../Yolt/testFiles/Fibonacci.exlang" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/nl/saxion/cos/Calc.interp" beforeDir="false" afterPath="$PROJECT_DIR$/gen/nl/saxion/cos/Calc.interp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/nl/saxion/cos/Calc.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/gen/nl/saxion/cos/Calc.tokens" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcBaseVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcBaseVisitor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcLexer.interp" beforeDir="false" afterPath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcLexer.interp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcLexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcLexer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcLexer.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcLexer.tokens" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcVisitor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/nl/saxion/cos/Calc.g4" beforeDir="false" afterPath="$PROJECT_DIR$/src/nl/saxion/cos/Calc.g4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/nl/saxion/cos/CodeGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/nl/saxion/cos/CodeGenerator.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="ProjectId" id="29WSEGsWftzMHT5xTGWMFuGLNpF" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+  </component>
+  <component name="RunManager">
+    <configuration name="Unnamed" type="Application" factoryName="Application" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="nl.saxion.cos.Calculator" />
+      <module name="Calculator" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="34ef71a3-1361-4a45-a918-081c32ba92fa" name="Changes" comment="" />
+      <created>1653227234457</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1653227234457</updated>
+      <workItem from="1653227235633" duration="4293000" />
+      <workItem from="1653232981214" duration="662000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+</project>

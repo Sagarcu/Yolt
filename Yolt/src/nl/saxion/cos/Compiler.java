@@ -54,6 +54,8 @@ public class Compiler {
 		// Phase 1/2: Run the lexer and parser
 		ParseTree parseTree = runLexerAndParser(input);
 
+
+
 		// ANTLR tries to do its best in creating a parse tree, even if the source code contains
 		// errors. So, check if that is the case and bail out if so.
 		if( errorCount > 0 )
@@ -81,7 +83,15 @@ public class Compiler {
 
 		YoltParser parser = new YoltParser(tokens);
 		parser.addErrorListener(getErrorListener());
-		return parser.program();                                   // TODO: Replace .program() with your own start symbol
+
+
+		/* TODO Remove these tests things.
+		ParseTree parseTree = parser.application();
+		System.out.println(parseTree.getChildCount());
+		System.out.println(parseTree.getChild(0).getChildCount());
+		System.out.println(parseTree.getChild(1).getChildCount()); */
+
+		return parser.application();
 	}
 
 	/**
@@ -92,6 +102,11 @@ public class Compiler {
 	 * @return           True if all code is semantically correct
 	 */
 	private boolean runChecker( ParseTree parseTree ) {
+
+
+		//Create language visitor.
+		//Create typechecker.
+
 		// TODO: Create your own checker that inherits from a BaseVisitor, e.g. ExampleLangBaseVisitor.
 		//       Call the visit() method with the parseTree as parameter. In that visitor, you check for
 		//       errors in the source code. Examples of errors you may want to check for:
@@ -115,24 +130,14 @@ public class Compiler {
 		jasminBytecode.add(".bytecode 49.0")
 				.add(".class public " + className)
 				.add(".super java/lang/Object")
-				.add();
+				.add("");
 
-		// Main method
-		// TODO: You will have to create a visitor that visits the parse tree and generates
-		//       code for the nodes in that tree.
-		//       In your case, you will probably want to supply that visitor with the JasminCode
-		//       created above and emit lines of Jasmin code for the nodes in the parse tree.
-		//       For now, I'll just create a simple template that prints 'Hello world!'
+		YoltCodeGenerator codeGenerator = new YoltCodeGenerator();
+		codeGenerator.visit(parseTree);
 
-		jasminBytecode.add(".method public static main([Ljava/lang/String;)V")
-				.add(".limit stack 2")
-				.add(".limit locals 1")  // NOTE: The args-parameter is a local too
-				.add()
-				.add("getstatic java/lang/System/out Ljava/io/PrintStream;")            // Push System.out
-				.add("ldc \"Hello from YOLT!\"")                                        // Push message
-				.add("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V")  // Call println()
-				.add("return")
-				.add(".end method");
+		for(String codeLine : codeGenerator.getJasminCode()) {
+			jasminBytecode.add(codeLine);
+		}
 
 		return jasminBytecode;
 	}

@@ -1,4 +1,4 @@
-// Generated from D:/Prog/COS/Seminar/Week 5 - Codegen/Assignment/src/nl/saxion/cos\Calc.g4 by ANTLR 4.8
+// Generated from C:/Users/mathi/Desktop/Yolt/codeGen/Calculator/src/nl/saxion/cos\Calc.g4 by ANTLR 4.10.1
 package nl.saxion.cos;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -30,6 +30,13 @@ public interface CalcVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExMulOp(CalcParser.ExMulOpContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExTernary}
+	 * labeled alternative in {@link CalcParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExTernary(CalcParser.ExTernaryContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code ExAddOp}
 	 * labeled alternative in {@link CalcParser#expression}.
