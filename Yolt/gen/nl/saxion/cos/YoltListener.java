@@ -247,6 +247,16 @@ public interface YoltListener extends ParseTreeListener {
 	 */
 	void exitPrint_stmt(YoltParser.Print_stmtContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link YoltParser#declarations}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeclarations(YoltParser.DeclarationsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link YoltParser#declarations}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeclarations(YoltParser.DeclarationsContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link YoltParser#statement}.
 	 * @param ctx the parse tree
 	 */

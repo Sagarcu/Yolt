@@ -5,34 +5,95 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="34ef71a3-1361-4a45-a918-081c32ba92fa" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../../Yolt/src/nl/saxion/cos/DataType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../Yolt/src/nl/saxion/cos/YoltCodeGenerator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../Yolt/src/nl/saxion/cos/YoltLanguageListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/Yolt.interp" beforeDir="false" afterPath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/Yolt.interp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/Yolt.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/Yolt.tokens" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltBaseListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltBaseListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltBaseVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltBaseVisitor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltLexer.interp" beforeDir="false" afterPath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltLexer.interp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltLexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltLexer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltLexer.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltLexer.tokens" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../Yolt/gen/nl/saxion/cos/YoltVisitor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Yolt/src/Yolt.g4" beforeDir="false" afterPath="$PROJECT_DIR$/../../Yolt/src/Yolt.g4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Yolt/src/nl/saxion/cos/Compiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../Yolt/src/nl/saxion/cos/Compiler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Yolt/testFiles/Fibonacci.exlang" beforeDir="false" afterPath="$PROJECT_DIR$/../../Yolt/testFiles/Fibonacci.exlang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gen/nl/saxion/cos/Calc.interp" beforeDir="false" afterPath="$PROJECT_DIR$/gen/nl/saxion/cos/Calc.interp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gen/nl/saxion/cos/Calc.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/gen/nl/saxion/cos/Calc.tokens" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcBaseVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcBaseVisitor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcLexer.interp" beforeDir="false" afterPath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcLexer.interp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcLexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcLexer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcLexer.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcLexer.tokens" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcVisitor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/nl/saxion/cos/Calc.g4" beforeDir="false" afterPath="$PROJECT_DIR$/src/nl/saxion/cos/Calc.g4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/nl/saxion/cos/CodeGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/nl/saxion/cos/CodeGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/copyright/profiles_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/antlr_runtime_4_8.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Calculator.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Sum.j" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/antlr-runtime-4.8.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/nl/saxion/cos/Calc.interp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/nl/saxion/cos/Calc.tokens" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcBaseVisitor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcLexer.interp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcLexer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcLexer.tokens" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcParser.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/nl/saxion/cos/CalcVisitor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jasmin.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Calculator/nl/saxion/cos/Calc.g4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Calculator/nl/saxion/cos/Calc.interp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Calculator/nl/saxion/cos/Calc.tokens" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Calculator/nl/saxion/cos/CalcBaseVisitor.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Calculator/nl/saxion/cos/CalcLexer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Calculator/nl/saxion/cos/CalcLexer.interp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Calculator/nl/saxion/cos/CalcLexer.tokens" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Calculator/nl/saxion/cos/CalcParser$ExAddOpContext.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Calculator/nl/saxion/cos/CalcParser$ExIntLiteralContext.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Calculator/nl/saxion/cos/CalcParser$ExMulOpContext.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Calculator/nl/saxion/cos/CalcParser$ExNegateContext.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Calculator/nl/saxion/cos/CalcParser$ExParenthesesContext.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Calculator/nl/saxion/cos/CalcParser$ExpressionContext.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Calculator/nl/saxion/cos/CalcParser$StartContext.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Calculator/nl/saxion/cos/CalcParser.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Calculator/nl/saxion/cos/CalcVisitor.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Calculator/nl/saxion/cos/Calculator$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Calculator/nl/saxion/cos/Calculator.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Calculator/nl/saxion/cos/CodeGenerator.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/nl/saxion/cos/Calc.g4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/nl/saxion/cos/Calculator.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/nl/saxion/cos/CodeGenerator.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Example.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Example.j" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Example.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Exercise1.j" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Exercise1.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Exercise10.j" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Exercise10.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Exercise2.j" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Exercise2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Exercise3.j" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Exercise3.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Exercise4.j" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Exercise4.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Exercise5.j" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Exercise5.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Exercise6.j" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Exercise6.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Exercise7.j" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Exercise7.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Exercise8.j" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Exercise8.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Exercise9.j" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Exercise9.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Solutions/Exercise1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Solutions/Exercise1.j" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Solutions/Exercise10.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Solutions/Exercise10.j" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Solutions/Exercise2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Solutions/Exercise2.j" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Solutions/Exercise3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Solutions/Exercise3.j" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Solutions/Exercise4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Solutions/Exercise4.j" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Solutions/Exercise5.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Solutions/Exercise5.j" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Solutions/Exercise6.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Solutions/Exercise6.j" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Solutions/Exercise7.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Solutions/Exercise7.j" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Solutions/Exercise8.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Solutions/Exercise8.j" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Solutions/Exercise9.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/Solutions/Exercise9.j" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/Assignments/jasmin.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/old exercises/Week 2/Seminar-Jasmin/jasmin.jar" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,7 +114,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../Yolt" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -77,7 +138,9 @@
       <option name="presentableId" value="Default" />
       <updated>1653227234457</updated>
       <workItem from="1653227235633" duration="4293000" />
-      <workItem from="1653232981214" duration="662000" />
+      <workItem from="1653232981214" duration="668000" />
+      <workItem from="1653306806692" duration="303000" />
+      <workItem from="1653307126845" duration="16000" />
     </task>
     <servers />
   </component>

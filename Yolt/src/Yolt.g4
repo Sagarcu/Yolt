@@ -5,19 +5,19 @@ application: class_declaration? function_declaration* EOF ;
 //TODO's:
 //FIX BUG WHERE YOU CAN ADD MULTIPLE NORMAL VALUES BEHIND EACH OTHER IN EXPRESSION (i i + 3 = 0) for example.
 
-class_declaration: CLASS IDENTIFIER PAREN_OPEN ((GOLD | INT | BOOLEAN | STRING) IDENTIFIER)*  PAREN_CLOSE BRACKET_OPEN function_declaration+ BRACKET_CLOSE;
+class_declaration: CLASS IDENTIFIER PAREN_OPEN ((GOLD | INT | BOOLEAN | STRING) IDENTIFIER)*  PAREN_CLOSE BRACKET_OPEN function_declaration+ BRACKET_CLOSE; //Could add declerations* here on both sides to make it possible to have global variables.
 function_declaration: FUNCTION IDENTIFIER PAREN_OPEN (((GOLD | INT | BOOLEAN | STRING) IDENTIFIER) (COMMA ((GOLD | INT | BOOLEAN | STRING) IDENTIFIER))*)? PAREN_CLOSE BRACKET_OPEN statement+ BRACKET_CLOSE;
 function_call: IDENTIFIER PAREN_OPEN (IDENTIFIER (COMMA IDENTIFIER)*)? PAREN_CLOSE SEMICOLON;
 
-int_declaration: INT IDENTIFIER EQUALS (INT_VALUE | prompt_input | random_input | expr*) SEMICOLON;
+int_declaration: INT IDENTIFIER EQUALS (INT_VALUE | prompt_input | random_input | expr?) SEMICOLON;
 boolean_declaration: BOOLEAN IDENTIFIER EQUALS (BOOLEAN_VALUE | prompt_input) SEMICOLON;
 string_declaration: STRING IDENTIFIER EQUALS ((STRING_VALUE) | prompt_input) SEMICOLON;
 gold_declaration: GOLD IDENTIFIER EQUALS (GOLD_VALUE | prompt_input) SEMICOLON;
 prompt_input: PROMPT PAREN_OPEN PAREN_CLOSE;
-random_input: RANDOM PAREN_OPEN INT_VALUE PAREN_CLOSE;
+random_input: RANDOM PAREN_OPEN number? PAREN_CLOSE;
 
 
-if_statement: IF PAREN_OPEN compare_multiple_values PAREN_CLOSE COLON BRACKET_OPEN statement* BRACKET_CLOSE else_if_statement* else_statement*;
+if_statement: IF PAREN_OPEN compare_multiple_values PAREN_CLOSE COLON BRACKET_OPEN statement* BRACKET_CLOSE else_if_statement* else_statement ?;
 else_if_statement: ELSE_IF PAREN_OPEN compare_multiple_values PAREN_CLOSE COLON BRACKET_OPEN statement* BRACKET_CLOSE;
 else_statement: ELSE COLON BRACKET_OPEN statement* BRACKET_CLOSE;
 return_statement: RETURN PAREN_OPEN IDENTIFIER PAREN_CLOSE SEMICOLON;
@@ -32,15 +32,16 @@ int_addition_short: IDENTIFIER (POW | MOD | MUL | DIV | ADD | SUB) EQUALS (INT_V
 int_addition: IDENTIFIER EQUALS expr+ SEMICOLON;
 
 compare_multiple_values: compare_values ((LOGIC_AND | LOGIC_OR) compare_values)*;
-compare_values: expr* (LOGIC_BIGGER | LOGIC_EQUAL | LOGIC_LOWER | LOGIC_UNEQUAL | LOGIC_BIGGER_EQUAL | LOGIC_LOWER_EQUAL) (INT_VALUE | IDENTIFIER | BOOLEAN_VALUE | STRING_VALUE);
+compare_values: expr (LOGIC_BIGGER | LOGIC_EQUAL | LOGIC_LOWER | LOGIC_UNEQUAL | LOGIC_BIGGER_EQUAL | LOGIC_LOWER_EQUAL) expr;
 
-print_stmt: PRINT PAREN_OPEN (IDENTIFIER |  STRING_VALUE) PAREN_CLOSE SEMICOLON;
+print_stmt: PRINT PAREN_OPEN (IDENTIFIER |  STRING_VALUE | INT_VALUE | BOOLEAN_VALUE | GOLD_VALUE) PAREN_CLOSE SEMICOLON;
 
+declarations: int_declaration | boolean_declaration | gold_declaration | string_declaration;
 
 statement: function_call | return_statement | bool_assignment | int_addition | if_statement | boolean_declaration | do_while_loop | while_loop | int_declaration | print_stmt | string_declaration | gold_declaration | int_addition_short | 'ADD' expr | var_assignment | var_addition;
 
 expr: (PAREN_OPEN expr PAREN_CLOSE) # ParanExpression
-    | SUB expr                         # NegativeExpression
+    | SUB expr                         # NegativeExpression //TODO PERHAPS CHANGE OR REMOVE THIS.
     | left=expr (POW | MOD) right=expr # PowModExpression
     | left=expr (MUL | DIV) right=expr # MulDivExpression
     | left=expr (ADD | SUB) right=expr # AddSubExpression

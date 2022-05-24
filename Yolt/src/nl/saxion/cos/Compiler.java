@@ -127,11 +127,6 @@ public class Compiler {
 	private JasminBytecode generateCode( ParseTree parseTree, String className ) {
 		JasminBytecode jasminBytecode = new JasminBytecode( className );
 
-		jasminBytecode.add(".bytecode 49.0")
-				.add(".class public " + className)
-				.add(".super java/lang/Object")
-				.add("");
-
 		YoltCodeGenerator codeGenerator = new YoltCodeGenerator();
 		codeGenerator.visit(parseTree);
 

@@ -1,11 +1,15 @@
-CLASS Test()
+CLASS Epic()
 {
-    FUNCTION test()
+    FUNCTION main()
     {
-    NUMBER funny = 5;
-    }
-    FUNCTION test2()
-    {
-    NUMBER funny = 5;
+        NUMBER superfunny = 5;
+        NUMBER megafunny  = 5;
+
+        REPEAT(superfunny < 10):
+        {
+        superfunny += 1;
+        }
+
+        NUMBER lit = TALK();
     }
 }

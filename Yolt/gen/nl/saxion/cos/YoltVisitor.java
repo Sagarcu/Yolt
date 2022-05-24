@@ -154,6 +154,12 @@ public interface YoltVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitPrint_stmt(YoltParser.Print_stmtContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link YoltParser#declarations}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeclarations(YoltParser.DeclarationsContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link YoltParser#statement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

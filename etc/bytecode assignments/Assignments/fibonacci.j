@@ -1,21 +1,9 @@
-.class public Exercise6
+.class public main
 .super java/lang/Object
 
-;
-; standard initializer (calls java.lang.Object's initializer)
-;
-.method public <init>()V
-	aload_0
-	invokenonvirtual java/lang/Object/<init>()V
-	return
-.end method
-
-;
-; main() method
-;
 .method public static main([Ljava/lang/String;)V
-	.limit stack 2
-	.limit locals 3
+	.limit stack 99
+	.limit locals 99
 
 	ldc 0
 	istore 1
@@ -27,8 +15,7 @@
 loopcheck:
 	iload 2
 	ldc 10
-	if_icmplt iteration
-	goto end
+	if_icmpge end
 	
 iteration:
 	iload 1
@@ -40,7 +27,7 @@ iteration:
 	ldc 1
 	iadd
 	istore 2
-	goto check
+	goto loopcheck
 	
 end:
     getstatic java/lang/System/out Ljava/io/PrintStream;
@@ -50,3 +37,4 @@ end:
 
     return
 .end method
+
