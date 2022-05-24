@@ -142,6 +142,20 @@ public interface YoltVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCompare_multiple_values(YoltParser.Compare_multiple_valuesContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code LogicAnd}
+	 * labeled alternative in {@link YoltParser#logic_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLogicAnd(YoltParser.LogicAndContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code LogicOr}
+	 * labeled alternative in {@link YoltParser#logic_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLogicOr(YoltParser.LogicOrContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link YoltParser#compare_values}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

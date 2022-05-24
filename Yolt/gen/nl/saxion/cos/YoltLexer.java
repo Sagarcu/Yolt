@@ -51,7 +51,7 @@ public class YoltLexer extends Lexer {
 			null, "'ADD'", "'+'", "'-'", "'*'", "'%'", "'/'", "'^'", "'=='", "'=!='", 
 			"'>'", "'<'", "'>='", "'<='", "'||'", "'&&'", "'IF'", "'ELSE IF'", "'ELSE'", 
 			"'STOP'", "'CLASS'", "'REPEAT'", "'WHILE'", "'FUNCTION'", "'RETURN'", 
-			"'COINS'", "'WORDS'", "'NUMBER'", "'BOOL'", "'SPEAK'", "'TALK'", "'RANDOM'", 
+			"'COINS'", "'WORDS'", "'NUMBER'", "'BOOL'", "'SPEAK'", "'TELL'", "'RANDOM'", 
 			"'='", null, null, null, null, null, null, "','", "';'", "':'", "'('", 
 			"')'", "'{'", "'}'", "'\"'", "'//*'"
 		};
@@ -277,8 +277,8 @@ public class YoltLexer extends Lexer {
 		"L\u0000\u0000\u00d78\u0001\u0000\u0000\u0000\u00d8\u00d9\u0005S\u0000"+
 		"\u0000\u00d9\u00da\u0005P\u0000\u0000\u00da\u00db\u0005E\u0000\u0000\u00db"+
 		"\u00dc\u0005A\u0000\u0000\u00dc\u00dd\u0005K\u0000\u0000\u00dd:\u0001"+
-		"\u0000\u0000\u0000\u00de\u00df\u0005T\u0000\u0000\u00df\u00e0\u0005A\u0000"+
-		"\u0000\u00e0\u00e1\u0005L\u0000\u0000\u00e1\u00e2\u0005K\u0000\u0000\u00e2"+
+		"\u0000\u0000\u0000\u00de\u00df\u0005T\u0000\u0000\u00df\u00e0\u0005E\u0000"+
+		"\u0000\u00e0\u00e1\u0005L\u0000\u0000\u00e1\u00e2\u0005L\u0000\u0000\u00e2"+
 		"<\u0001\u0000\u0000\u0000\u00e3\u00e4\u0005R\u0000\u0000\u00e4\u00e5\u0005"+
 		"A\u0000\u0000\u00e5\u00e6\u0005N\u0000\u0000\u00e6\u00e7\u0005D\u0000"+
 		"\u0000\u00e7\u00e8\u0005O\u0000\u0000\u00e8\u00e9\u0005M\u0000\u0000\u00e9"+

@@ -17,7 +17,7 @@ prompt_input: PROMPT PAREN_OPEN PAREN_CLOSE;
 random_input: RANDOM PAREN_OPEN number? PAREN_CLOSE;
 
 
-if_statement: IF PAREN_OPEN compare_multiple_values PAREN_CLOSE COLON BRACKET_OPEN statement* BRACKET_CLOSE else_if_statement* else_statement ?;
+if_statement: IF PAREN_OPEN compare_multiple_values PAREN_CLOSE COLON BRACKET_OPEN statement* BRACKET_CLOSE else_if_statement* else_statement?;
 else_if_statement: ELSE_IF PAREN_OPEN compare_multiple_values PAREN_CLOSE COLON BRACKET_OPEN statement* BRACKET_CLOSE;
 else_statement: ELSE COLON BRACKET_OPEN statement* BRACKET_CLOSE;
 return_statement: RETURN PAREN_OPEN IDENTIFIER PAREN_CLOSE SEMICOLON;
@@ -31,16 +31,23 @@ var_addition: IDENTIFIER EQUALS IDENTIFIER (POW | MOD | MUL | DIV | ADD | SUB) I
 int_addition_short: IDENTIFIER (POW | MOD | MUL | DIV | ADD | SUB) EQUALS (INT_VALUE | GOLD_VALUE) SEMICOLON;
 int_addition: IDENTIFIER EQUALS expr+ SEMICOLON;
 
-compare_multiple_values: compare_values ((LOGIC_AND | LOGIC_OR) compare_values)*;
+
+compare_multiple_values: compare_values logic_expr*;
+
+logic_expr:  LOGIC_AND compare_values  # LogicAnd
+           | LOGIC_OR compare_values   # LogicOr
+           ;
+
+
 compare_values: expr (LOGIC_BIGGER | LOGIC_EQUAL | LOGIC_LOWER | LOGIC_UNEQUAL | LOGIC_BIGGER_EQUAL | LOGIC_LOWER_EQUAL) expr;
 
-print_stmt: PRINT PAREN_OPEN (IDENTIFIER |  STRING_VALUE | INT_VALUE | BOOLEAN_VALUE | GOLD_VALUE) PAREN_CLOSE SEMICOLON;
+print_stmt: PRINT PAREN_OPEN (IDENTIFIER |  STRING_VALUE | INT_VALUE | BOOLEAN_VALUE | GOLD_VALUE) PAREN_CLOSE SEMICOLON; //TODO CHANGE TO EXPR
 
 declarations: int_declaration | boolean_declaration | gold_declaration | string_declaration;
 
 statement: function_call | return_statement | bool_assignment | int_addition | if_statement | boolean_declaration | do_while_loop | while_loop | int_declaration | print_stmt | string_declaration | gold_declaration | int_addition_short | 'ADD' expr | var_assignment | var_addition;
 
-expr: (PAREN_OPEN expr PAREN_CLOSE) # ParanExpression
+expr: (PAREN_OPEN expr PAREN_CLOSE)    # ParanExpression
     | SUB expr                         # NegativeExpression //TODO PERHAPS CHANGE OR REMOVE THIS.
     | left=expr (POW | MOD) right=expr # PowModExpression
     | left=expr (MUL | DIV) right=expr # MulDivExpression
@@ -85,7 +92,7 @@ BOOLEAN: 'BOOL';
 
 
 PRINT: 'SPEAK';
-PROMPT: 'TALK';
+PROMPT: 'TELL';
 RANDOM: 'RANDOM';
 EQUALS: '=';
 

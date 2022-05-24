@@ -75,7 +75,7 @@ WS=48
 'NUMBER'=27
 'BOOL'=28
 'SPEAK'=29
-'TALK'=30
+'TELL'=30
 'RANDOM'=31
 '='=32
 ','=39

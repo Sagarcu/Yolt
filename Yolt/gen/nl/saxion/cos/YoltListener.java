@@ -227,6 +227,30 @@ public interface YoltListener extends ParseTreeListener {
 	 */
 	void exitCompare_multiple_values(YoltParser.Compare_multiple_valuesContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code LogicAnd}
+	 * labeled alternative in {@link YoltParser#logic_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterLogicAnd(YoltParser.LogicAndContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code LogicAnd}
+	 * labeled alternative in {@link YoltParser#logic_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitLogicAnd(YoltParser.LogicAndContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code LogicOr}
+	 * labeled alternative in {@link YoltParser#logic_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterLogicOr(YoltParser.LogicOrContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code LogicOr}
+	 * labeled alternative in {@link YoltParser#logic_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitLogicOr(YoltParser.LogicOrContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link YoltParser#compare_values}.
 	 * @param ctx the parse tree
 	 */

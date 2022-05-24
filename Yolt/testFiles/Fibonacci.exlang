@@ -5,11 +5,11 @@ CLASS Epic()
         NUMBER superfunny = 5;
         NUMBER megafunny  = 5;
 
-        REPEAT(superfunny < 10):
-        {
-        superfunny += 1;
-        }
 
-        NUMBER lit = TALK();
+
+        IF(megafunny < 10 || superfunny > 8 && superfunny > 3):
+        {
+         SPEAK(superfunny);
+        }
     }
 }

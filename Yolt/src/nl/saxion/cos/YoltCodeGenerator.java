@@ -13,6 +13,7 @@ public class YoltCodeGenerator extends YoltBaseVisitor< Void > {
     private int loopnr = 0;
     private int endloop = 0;
 
+    private int logicnr = 0;
     private int statementnr = 0;
     private int boolnr = 0;
 
@@ -25,14 +26,25 @@ public class YoltCodeGenerator extends YoltBaseVisitor< Void > {
     @Override
     public Void visitApplication(YoltParser.ApplicationContext ctx) {
         //Our code has either one class and / or multiple functions. We visit those here.
-
+        //variables.put("Magic&&Flag", "0");
         if (ctx.class_declaration() != null) visit(ctx.class_declaration()); //Check our Classes
         else
         {
             jasminCode.add(".class public undefined");
             jasminCode.add(".super java/lang/Object");
             jasminCode.add("");
+
+            jasminCode.add(".method public <init>()V");
+            jasminCode.add("aload_0");
+            jasminCode.add("invokenonvirtual java/lang/Object/<init>()V");
+            jasminCode.add("return");
+            jasminCode.add(".end method");
+            jasminCode.add("");
         }
+
+        //Standard initializer.
+
+
 
         for(int i = 0; i < ctx.function_declaration().size(); i++) //Check our functions.
         {
@@ -48,7 +60,12 @@ public class YoltCodeGenerator extends YoltBaseVisitor< Void > {
         jasminCode.add(".super java/lang/Object");
         jasminCode.add("");
 
-        System.out.println(ctx.function_declaration());
+        jasminCode.add(".method public <init>()V");
+        jasminCode.add("aload_0");
+        jasminCode.add("invokenonvirtual java/lang/Object/<init>()V");
+        jasminCode.add("return");
+        jasminCode.add(".end method");
+        jasminCode.add("");
 
         for(int i = 0; i < ctx.function_declaration().size(); i++)
         {
@@ -168,23 +185,65 @@ public class YoltCodeGenerator extends YoltBaseVisitor< Void > {
     @Override //TODO FIX THE && || STUFF!
     public Void visitCompare_multiple_values(YoltParser.Compare_multiple_valuesContext ctx) {
 
-        for(int i = 0; i < ctx.compare_values().size(); i++)
-        {
-            visit(ctx.compare_values(i));
-        }
+        //Every time we come in here
+        visit(ctx.compare_values()); //Get our first value. The rest we will calculate in order later?
 
-        if(ctx.LOGIC_AND() != null) //TODO FIX THIS!
+
+
+        //for(int i = 0; i < ctx.compare_values().size(); i++)
+        //{
+        //    visit(ctx.compare_values());
+        //}
+
+
+
+        //TODO VISIT THESE IN ORDER OF OR AND AND! This way we can first do all the and statements and then do the or statements.
+        /*
+        for(int i = (ctx.LOGIC_AND().size() + ctx.LOGIC_OR().size()); i > 0; i--) //TODO  Replace with boolean logic perhaps.
         {
-            //We have to find out how many numbers we actually have to compare. somehow. Let's check antlr preview with a statement like this to do this!
-            //Check both sides. If they are both equal then return 1, else return 0.
+            if (ctx.LOGIC_AND(i - 1) != null)
+            {
+                jasminCode.add("ifeq false_" + boolnr); //If it is false the result of the statement will always be false.
+                jasminCode.add("ifeq false2_" + boolnr);
+                jasminCode.add("ldc 1"); //Both are true, so the value we add on the stack is also true!
+                jasminCode.add("goto endcmp_" + boolnr);
+
+                jasminCode.add("false_" + boolnr +":"); //First value is false, so statement is false.
+                jasminCode.add("pop"); //Pop this value, we don't care about it really since it doesn't matter if it is true or false.
+                jasminCode.add("false2_" + boolnr +":"); //Second value is false, so statement is false.
+                jasminCode.add("ldc 0");
+
+                jasminCode.add("endcmp_" + boolnr + ":");
+                boolnr++;
+            } else if (ctx.LOGIC_OR(i - 1) != null)
+            {
+                //TODO If it is correct then we return true.
+                //if first value is false we need to check the second value. If both are false then we ldc 0
+                //If first value is 1 (true) what do we do?
+                jasminCode.add("ifeq false_" + boolnr); //If the first value is false we go and check if the second value is also false.
+                jasminCode.add("pop"); //It wasn't false, so we can remove the first one and tell our result was true.
+                jasminCode.add("ldc 1"); //Add true on the stack.
+                jasminCode.add("goto endcmp_" + boolnr); //Go to end of choice.
+
+                jasminCode.add("false_" + boolnr +":"); //Check if the second value perhaps is true.
+                jasminCode.add("ifeq false2_" + boolnr);//
+                jasminCode.add("ldc 1"); //TODO Consider changing this to a -1 and store this in magic_value. Then at end load magic value and see if it is -1, indicating it is true.
+                jasminCode.add("goto endcmp_" + boolnr);
+
+                jasminCode.add("false2_" + boolnr +":");
+                jasminCode.add("ldc 0");
+
+                jasminCode.add("endcmp_" + boolnr + ":");
+                boolnr++;
+                //Checks if one of the values is equal?
+            }
         }
-        if (ctx.LOGIC_OR() != null) //TODO FIX THIS!
-        {
-            //Do stuff for checking or.
-        }
+        */
+        //Consider adding magic flag :D.
+
+
 
         //Don't do anything if it is neither and / or because we already got our value!
-
         //WE WANT TO RETURN 1 NUMBER HERE, WHICH IS 0 OR 1 BASED ON TRUE OR FALSE.
         return null;
     }
@@ -253,7 +312,23 @@ public class YoltCodeGenerator extends YoltBaseVisitor< Void > {
     //TODO NOG TE FIXEN!
     @Override
     public Void visitPrint_stmt(YoltParser.Print_stmtContext ctx) {
-        return super.visitPrint_stmt(ctx);
+
+        if(ctx.IDENTIFIER() != null)
+        {
+            jasminCode.add("getstatic java/lang/System/out Ljava/io/PrintStream;");
+            String varIndex = variables.get(ctx.IDENTIFIER().toString());
+            jasminCode.add("iload " + varIndex);
+            jasminCode.add("invokevirtual java/io/PrintStream/println(I)V");
+
+        } else if (ctx.INT_VALUE() != null)
+        {
+            jasminCode.add("getstatic java/lang/System/out Ljava/io/PrintStream;");
+            jasminCode.add("ldc " + ctx.INT_VALUE().toString());
+            jasminCode.add("invokevirtual java/io/PrintStream/println(I)V");
+        }
+
+
+        return null;
     }
 
     @Override
