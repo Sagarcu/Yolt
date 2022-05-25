@@ -217,15 +217,29 @@ public interface YoltListener extends ParseTreeListener {
 	 */
 	void exitInt_addition(YoltParser.Int_additionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link YoltParser#compare_multiple_values}.
+	 * Enter a parse tree produced by the {@code LogicOr}
+	 * labeled alternative in {@link YoltParser#logic_expr}.
 	 * @param ctx the parse tree
 	 */
-	void enterCompare_multiple_values(YoltParser.Compare_multiple_valuesContext ctx);
+	void enterLogicOr(YoltParser.LogicOrContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link YoltParser#compare_multiple_values}.
+	 * Exit a parse tree produced by the {@code LogicOr}
+	 * labeled alternative in {@link YoltParser#logic_expr}.
 	 * @param ctx the parse tree
 	 */
-	void exitCompare_multiple_values(YoltParser.Compare_multiple_valuesContext ctx);
+	void exitLogicOr(YoltParser.LogicOrContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ValueExpression}
+	 * labeled alternative in {@link YoltParser#logic_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterValueExpression(YoltParser.ValueExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ValueExpression}
+	 * labeled alternative in {@link YoltParser#logic_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitValueExpression(YoltParser.ValueExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code LogicAnd}
 	 * labeled alternative in {@link YoltParser#logic_expr}.
@@ -238,18 +252,6 @@ public interface YoltListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitLogicAnd(YoltParser.LogicAndContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code LogicOr}
-	 * labeled alternative in {@link YoltParser#logic_expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterLogicOr(YoltParser.LogicOrContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code LogicOr}
-	 * labeled alternative in {@link YoltParser#logic_expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitLogicOr(YoltParser.LogicOrContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link YoltParser#compare_values}.
 	 * @param ctx the parse tree

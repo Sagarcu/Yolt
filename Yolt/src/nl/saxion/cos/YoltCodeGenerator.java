@@ -98,7 +98,7 @@ public class YoltCodeGenerator extends YoltBaseVisitor< Void > {
     @Override
     public Void visitIf_statement(YoltParser.If_statementContext ctx) {
 
-        visit(ctx.compare_multiple_values());
+        visit(ctx.logic_expr());
 
         //Check if it 0 or 1. If it is 1 then do all the stuff here, else go to end of the if statement.
 
@@ -131,7 +131,7 @@ public class YoltCodeGenerator extends YoltBaseVisitor< Void > {
 
     @Override
     public Void visitElse_if_statement(YoltParser.Else_if_statementContext ctx) {
-        visit(ctx.compare_multiple_values()); //Get our valuesss.
+        visit(ctx.logic_expr()); //Get our valuesss.
 
         jasminCode.add("ifeq else_" + statementnr); //If it is false. go to end if.
 
@@ -164,7 +164,7 @@ public class YoltCodeGenerator extends YoltBaseVisitor< Void > {
 
         jasminCode.add("loopcheck_" + loopnr + ":");
 
-        visit(ctx.compare_multiple_values()); //Get our true or false on the stack.
+        visit(ctx.logic_expr()); //Get our true or false on the stack.
 
         jasminCode.add("ifeq endloop_" + endloop); //Once our answer from compare_multiple_values becomes zero we go to the end of the loop.
 
@@ -181,70 +181,48 @@ public class YoltCodeGenerator extends YoltBaseVisitor< Void > {
         endloop++;
         return null;
     }
+    
+    @Override
+    public Void visitLogicAnd(YoltParser.LogicAndContext ctx) {
+        visit(ctx.logic_expr(0));
+        visit(ctx.logic_expr(1));
 
-    @Override //TODO FIX THE && || STUFF!
-    public Void visitCompare_multiple_values(YoltParser.Compare_multiple_valuesContext ctx) {
+        jasminCode.add("ifeq false_" + boolnr); //If it is false the result of the statement will always be false.
+        jasminCode.add("ifeq false2_" + boolnr);
+        jasminCode.add("ldc 1"); //Both are true, so the value we add on the stack is also true!
+        jasminCode.add("goto endcmp_" + boolnr);
 
-        //Every time we come in here
-        visit(ctx.compare_values()); //Get our first value. The rest we will calculate in order later?
+        jasminCode.add("false_" + boolnr +":"); //First value is false, so statement is false.
+        jasminCode.add("pop"); //Pop this value, we don't care about it really since it doesn't matter if it is true or false.
+        jasminCode.add("false2_" + boolnr +":"); //Second value is false, so statement is false.
+        jasminCode.add("ldc 0");
 
+        jasminCode.add("endcmp_" + boolnr + ":");
+        boolnr++;
+        return null;
+    }
 
+    @Override
+    public Void visitLogicOr(YoltParser.LogicOrContext ctx) {
+        visit(ctx.logic_expr(0));
+        visit(ctx.logic_expr(1));
 
-        //for(int i = 0; i < ctx.compare_values().size(); i++)
-        //{
-        //    visit(ctx.compare_values());
-        //}
+        System.out.println("HAPPEND OR!");
+        jasminCode.add("ifeq false_" + boolnr); //If the first value is false we go and check if the second value is also false.
+        jasminCode.add("pop"); //It wasn't false, so we can remove the first one and tell our result was true.
+        jasminCode.add("ldc 1"); //Add true on the stack.
+        jasminCode.add("goto endcmp_" + boolnr); //Go to end of choice.
 
+        jasminCode.add("false_" + boolnr +":"); //Check if the second value perhaps is true.
+        jasminCode.add("ifeq false2_" + boolnr);//
+        jasminCode.add("ldc 1"); //TODO Consider changing this to a -1 and store this in magic_value. Then at end load magic value and see if it is -1, indicating it is true.
+        jasminCode.add("goto endcmp_" + boolnr);
 
+        jasminCode.add("false2_" + boolnr +":");
+        jasminCode.add("ldc 0");
 
-        //TODO VISIT THESE IN ORDER OF OR AND AND! This way we can first do all the and statements and then do the or statements.
-        /*
-        for(int i = (ctx.LOGIC_AND().size() + ctx.LOGIC_OR().size()); i > 0; i--) //TODO  Replace with boolean logic perhaps.
-        {
-            if (ctx.LOGIC_AND(i - 1) != null)
-            {
-                jasminCode.add("ifeq false_" + boolnr); //If it is false the result of the statement will always be false.
-                jasminCode.add("ifeq false2_" + boolnr);
-                jasminCode.add("ldc 1"); //Both are true, so the value we add on the stack is also true!
-                jasminCode.add("goto endcmp_" + boolnr);
-
-                jasminCode.add("false_" + boolnr +":"); //First value is false, so statement is false.
-                jasminCode.add("pop"); //Pop this value, we don't care about it really since it doesn't matter if it is true or false.
-                jasminCode.add("false2_" + boolnr +":"); //Second value is false, so statement is false.
-                jasminCode.add("ldc 0");
-
-                jasminCode.add("endcmp_" + boolnr + ":");
-                boolnr++;
-            } else if (ctx.LOGIC_OR(i - 1) != null)
-            {
-                //TODO If it is correct then we return true.
-                //if first value is false we need to check the second value. If both are false then we ldc 0
-                //If first value is 1 (true) what do we do?
-                jasminCode.add("ifeq false_" + boolnr); //If the first value is false we go and check if the second value is also false.
-                jasminCode.add("pop"); //It wasn't false, so we can remove the first one and tell our result was true.
-                jasminCode.add("ldc 1"); //Add true on the stack.
-                jasminCode.add("goto endcmp_" + boolnr); //Go to end of choice.
-
-                jasminCode.add("false_" + boolnr +":"); //Check if the second value perhaps is true.
-                jasminCode.add("ifeq false2_" + boolnr);//
-                jasminCode.add("ldc 1"); //TODO Consider changing this to a -1 and store this in magic_value. Then at end load magic value and see if it is -1, indicating it is true.
-                jasminCode.add("goto endcmp_" + boolnr);
-
-                jasminCode.add("false2_" + boolnr +":");
-                jasminCode.add("ldc 0");
-
-                jasminCode.add("endcmp_" + boolnr + ":");
-                boolnr++;
-                //Checks if one of the values is equal?
-            }
-        }
-        */
-        //Consider adding magic flag :D.
-
-
-
-        //Don't do anything if it is neither and / or because we already got our value!
-        //WE WANT TO RETURN 1 NUMBER HERE, WHICH IS 0 OR 1 BASED ON TRUE OR FALSE.
+        jasminCode.add("endcmp_" + boolnr + ":");
+        boolnr++;
         return null;
     }
 

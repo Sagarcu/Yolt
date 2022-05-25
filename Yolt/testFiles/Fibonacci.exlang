@@ -2,14 +2,16 @@ CLASS Epic()
 {
     FUNCTION main()
     {
-        NUMBER superfunny = 5;
+        NUMBER superfunny = 0;
         NUMBER megafunny  = 5;
 
 
-
-        IF(megafunny < 10 || superfunny > 8 && superfunny > 3):
+        REPEAT(superfunny < 69 && megafunny < superfunny):
         {
-         SPEAK(superfunny);
+        SPEAK(superfunny);
+
+        superfunny += 1;
+        megafunny += 1;
         }
     }
 }

@@ -267,13 +267,25 @@ public class YoltBaseListener implements YoltListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCompare_multiple_values(YoltParser.Compare_multiple_valuesContext ctx) { }
+	@Override public void enterLogicOr(YoltParser.LogicOrContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitCompare_multiple_values(YoltParser.Compare_multiple_valuesContext ctx) { }
+	@Override public void exitLogicOr(YoltParser.LogicOrContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterValueExpression(YoltParser.ValueExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitValueExpression(YoltParser.ValueExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -286,18 +298,6 @@ public class YoltBaseListener implements YoltListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitLogicAnd(YoltParser.LogicAndContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterLogicOr(YoltParser.LogicOrContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitLogicOr(YoltParser.LogicOrContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

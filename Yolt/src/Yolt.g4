@@ -17,13 +17,13 @@ prompt_input: PROMPT PAREN_OPEN PAREN_CLOSE;
 random_input: RANDOM PAREN_OPEN number? PAREN_CLOSE;
 
 
-if_statement: IF PAREN_OPEN compare_multiple_values PAREN_CLOSE COLON BRACKET_OPEN statement* BRACKET_CLOSE else_if_statement* else_statement?;
-else_if_statement: ELSE_IF PAREN_OPEN compare_multiple_values PAREN_CLOSE COLON BRACKET_OPEN statement* BRACKET_CLOSE;
+if_statement: IF PAREN_OPEN logic_expr PAREN_CLOSE COLON BRACKET_OPEN statement* BRACKET_CLOSE else_if_statement* else_statement?;
+else_if_statement: ELSE_IF PAREN_OPEN logic_expr PAREN_CLOSE COLON BRACKET_OPEN statement* BRACKET_CLOSE;
 else_statement: ELSE COLON BRACKET_OPEN statement* BRACKET_CLOSE;
 return_statement: RETURN PAREN_OPEN IDENTIFIER PAREN_CLOSE SEMICOLON;
 
-while_loop: LOOP PAREN_OPEN compare_multiple_values PAREN_CLOSE COLON BRACKET_OPEN statement+ (BREAK SEMICOLON)? BRACKET_CLOSE;
-do_while_loop: LOOP COLON BRACKET_OPEN statement+ (BREAK SEMICOLON)? BRACKET_CLOSE WHILE PAREN_OPEN compare_multiple_values PAREN_CLOSE SEMICOLON;
+while_loop: LOOP PAREN_OPEN logic_expr PAREN_CLOSE COLON BRACKET_OPEN statement+ (BREAK SEMICOLON)? BRACKET_CLOSE;
+do_while_loop: LOOP COLON BRACKET_OPEN statement+ (BREAK SEMICOLON)? BRACKET_CLOSE WHILE PAREN_OPEN logic_expr*PAREN_CLOSE SEMICOLON;
 
 var_assignment: IDENTIFIER EQUALS IDENTIFIER SEMICOLON;
 bool_assignment: IDENTIFIER EQUALS BOOLEAN_VALUE SEMICOLON;
@@ -32,10 +32,9 @@ int_addition_short: IDENTIFIER (POW | MOD | MUL | DIV | ADD | SUB) EQUALS (INT_V
 int_addition: IDENTIFIER EQUALS expr+ SEMICOLON;
 
 
-compare_multiple_values: compare_values logic_expr*;
-
-logic_expr:  LOGIC_AND compare_values  # LogicAnd
-           | LOGIC_OR compare_values   # LogicOr
+logic_expr:  logic_expr  LOGIC_AND logic_expr  # LogicAnd
+           | logic_expr  LOGIC_OR logic_expr   # LogicOr
+           | compare_values                    # ValueExpression
            ;
 
 
