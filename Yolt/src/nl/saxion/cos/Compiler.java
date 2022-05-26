@@ -2,6 +2,8 @@ package nl.saxion.cos;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeProperty;
+
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,6 +19,9 @@ public class Compiler {
 	 * The number of errors detected by the lexer and parser.
 	 */
 	private int errorCount = 0;
+	private ParseTreeProperty<DataType> types = new ParseTreeProperty<>();
+	private ParseTreeProperty<Symbol> symbols = new ParseTreeProperty<>();
+
 
 	/**
 	 * Compiles a complete source code file.
@@ -102,10 +107,14 @@ public class Compiler {
 	 * @return           True if all code is semantically correct
 	 */
 	private boolean runChecker( ParseTree parseTree ) {
-
-
-		//Create language visitor.
-		//Create typechecker.
+		try {
+			YoltCodeChecker checker = new YoltCodeChecker(types, symbols);
+			checker.visit(parseTree);
+			return true;
+		} catch( YoltCompilerException ce ) {
+			System.err.println(ce.getMessage());
+			return false;
+		}
 
 		// TODO: Create your own checker that inherits from a BaseVisitor, e.g. ExampleLangBaseVisitor.
 		//       Call the visit() method with the parseTree as parameter. In that visitor, you check for
@@ -114,7 +123,6 @@ public class Compiler {
 		//         - The user is trying to assign a value to a variable with a different type
 		//         - An if-statement has a condition that is not a boolean
 		//         - An expression mixes values of incompatible data types
-		return true;
 	}
 
 	/**
@@ -127,7 +135,7 @@ public class Compiler {
 	private JasminBytecode generateCode( ParseTree parseTree, String className ) {
 		JasminBytecode jasminBytecode = new JasminBytecode( className );
 
-		YoltCodeGenerator codeGenerator = new YoltCodeGenerator();
+		YoltCodeGenerator codeGenerator = new YoltCodeGenerator(types, symbols);
 		codeGenerator.visit(parseTree);
 
 		for(String codeLine : codeGenerator.getJasminCode()) {

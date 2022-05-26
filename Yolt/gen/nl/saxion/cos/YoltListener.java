@@ -47,45 +47,45 @@ public interface YoltListener extends ParseTreeListener {
 	 */
 	void exitFunction_call(YoltParser.Function_callContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link YoltParser#int_declaration}.
+	 * Enter a parse tree produced by {@link YoltParser#var_declaration}.
 	 * @param ctx the parse tree
 	 */
-	void enterInt_declaration(YoltParser.Int_declarationContext ctx);
+	void enterVar_declaration(YoltParser.Var_declarationContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link YoltParser#int_declaration}.
+	 * Exit a parse tree produced by {@link YoltParser#var_declaration}.
 	 * @param ctx the parse tree
 	 */
-	void exitInt_declaration(YoltParser.Int_declarationContext ctx);
+	void exitVar_declaration(YoltParser.Var_declarationContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link YoltParser#boolean_declaration}.
+	 * Enter a parse tree produced by {@link YoltParser#var_addition}.
 	 * @param ctx the parse tree
 	 */
-	void enterBoolean_declaration(YoltParser.Boolean_declarationContext ctx);
+	void enterVar_addition(YoltParser.Var_additionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link YoltParser#boolean_declaration}.
+	 * Exit a parse tree produced by {@link YoltParser#var_addition}.
 	 * @param ctx the parse tree
 	 */
-	void exitBoolean_declaration(YoltParser.Boolean_declarationContext ctx);
+	void exitVar_addition(YoltParser.Var_additionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link YoltParser#string_declaration}.
+	 * Enter a parse tree produced by {@link YoltParser#var_addition_short}.
 	 * @param ctx the parse tree
 	 */
-	void enterString_declaration(YoltParser.String_declarationContext ctx);
+	void enterVar_addition_short(YoltParser.Var_addition_shortContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link YoltParser#string_declaration}.
+	 * Exit a parse tree produced by {@link YoltParser#var_addition_short}.
 	 * @param ctx the parse tree
 	 */
-	void exitString_declaration(YoltParser.String_declarationContext ctx);
+	void exitVar_addition_short(YoltParser.Var_addition_shortContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link YoltParser#gold_declaration}.
+	 * Enter a parse tree produced by {@link YoltParser#string_addition_short}.
 	 * @param ctx the parse tree
 	 */
-	void enterGold_declaration(YoltParser.Gold_declarationContext ctx);
+	void enterString_addition_short(YoltParser.String_addition_shortContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link YoltParser#gold_declaration}.
+	 * Exit a parse tree produced by {@link YoltParser#string_addition_short}.
 	 * @param ctx the parse tree
 	 */
-	void exitGold_declaration(YoltParser.Gold_declarationContext ctx);
+	void exitString_addition_short(YoltParser.String_addition_shortContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link YoltParser#prompt_input}.
 	 * @param ctx the parse tree
@@ -167,55 +167,25 @@ public interface YoltListener extends ParseTreeListener {
 	 */
 	void exitDo_while_loop(YoltParser.Do_while_loopContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link YoltParser#var_assignment}.
+	 * Enter a parse tree produced by {@link YoltParser#variables}.
 	 * @param ctx the parse tree
 	 */
-	void enterVar_assignment(YoltParser.Var_assignmentContext ctx);
+	void enterVariables(YoltParser.VariablesContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link YoltParser#var_assignment}.
+	 * Exit a parse tree produced by {@link YoltParser#variables}.
 	 * @param ctx the parse tree
 	 */
-	void exitVar_assignment(YoltParser.Var_assignmentContext ctx);
+	void exitVariables(YoltParser.VariablesContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link YoltParser#bool_assignment}.
+	 * Enter a parse tree produced by {@link YoltParser#break_statement}.
 	 * @param ctx the parse tree
 	 */
-	void enterBool_assignment(YoltParser.Bool_assignmentContext ctx);
+	void enterBreak_statement(YoltParser.Break_statementContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link YoltParser#bool_assignment}.
+	 * Exit a parse tree produced by {@link YoltParser#break_statement}.
 	 * @param ctx the parse tree
 	 */
-	void exitBool_assignment(YoltParser.Bool_assignmentContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link YoltParser#var_addition}.
-	 * @param ctx the parse tree
-	 */
-	void enterVar_addition(YoltParser.Var_additionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link YoltParser#var_addition}.
-	 * @param ctx the parse tree
-	 */
-	void exitVar_addition(YoltParser.Var_additionContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link YoltParser#int_addition_short}.
-	 * @param ctx the parse tree
-	 */
-	void enterInt_addition_short(YoltParser.Int_addition_shortContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link YoltParser#int_addition_short}.
-	 * @param ctx the parse tree
-	 */
-	void exitInt_addition_short(YoltParser.Int_addition_shortContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link YoltParser#int_addition}.
-	 * @param ctx the parse tree
-	 */
-	void enterInt_addition(YoltParser.Int_additionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link YoltParser#int_addition}.
-	 * @param ctx the parse tree
-	 */
-	void exitInt_addition(YoltParser.Int_additionContext ctx);
+	void exitBreak_statement(YoltParser.Break_statementContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code LogicOr}
 	 * labeled alternative in {@link YoltParser#logic_expr}.
@@ -273,16 +243,6 @@ public interface YoltListener extends ParseTreeListener {
 	 */
 	void exitPrint_stmt(YoltParser.Print_stmtContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link YoltParser#declarations}.
-	 * @param ctx the parse tree
-	 */
-	void enterDeclarations(YoltParser.DeclarationsContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link YoltParser#declarations}.
-	 * @param ctx the parse tree
-	 */
-	void exitDeclarations(YoltParser.DeclarationsContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link YoltParser#statement}.
 	 * @param ctx the parse tree
 	 */
@@ -317,6 +277,54 @@ public interface YoltListener extends ParseTreeListener {
 	 */
 	void exitParanExpression(YoltParser.ParanExpressionContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code RandomIdentifier}
+	 * labeled alternative in {@link YoltParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterRandomIdentifier(YoltParser.RandomIdentifierContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code RandomIdentifier}
+	 * labeled alternative in {@link YoltParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitRandomIdentifier(YoltParser.RandomIdentifierContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code VarIdentifier}
+	 * labeled alternative in {@link YoltParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterVarIdentifier(YoltParser.VarIdentifierContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code VarIdentifier}
+	 * labeled alternative in {@link YoltParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitVarIdentifier(YoltParser.VarIdentifierContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code IntIdentifier}
+	 * labeled alternative in {@link YoltParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterIntIdentifier(YoltParser.IntIdentifierContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code IntIdentifier}
+	 * labeled alternative in {@link YoltParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitIntIdentifier(YoltParser.IntIdentifierContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code StringIdentifier}
+	 * labeled alternative in {@link YoltParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterStringIdentifier(YoltParser.StringIdentifierContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code StringIdentifier}
+	 * labeled alternative in {@link YoltParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitStringIdentifier(YoltParser.StringIdentifierContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code PowModExpression}
 	 * labeled alternative in {@link YoltParser#expr}.
 	 * @param ctx the parse tree
@@ -329,17 +337,41 @@ public interface YoltListener extends ParseTreeListener {
 	 */
 	void exitPowModExpression(YoltParser.PowModExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code NumberExpression}
+	 * Enter a parse tree produced by the {@code BoolIdentifier}
 	 * labeled alternative in {@link YoltParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void enterNumberExpression(YoltParser.NumberExpressionContext ctx);
+	void enterBoolIdentifier(YoltParser.BoolIdentifierContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code NumberExpression}
+	 * Exit a parse tree produced by the {@code BoolIdentifier}
 	 * labeled alternative in {@link YoltParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void exitNumberExpression(YoltParser.NumberExpressionContext ctx);
+	void exitBoolIdentifier(YoltParser.BoolIdentifierContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code GoldIdentifier}
+	 * labeled alternative in {@link YoltParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterGoldIdentifier(YoltParser.GoldIdentifierContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code GoldIdentifier}
+	 * labeled alternative in {@link YoltParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitGoldIdentifier(YoltParser.GoldIdentifierContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code TextIdentifier}
+	 * labeled alternative in {@link YoltParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterTextIdentifier(YoltParser.TextIdentifierContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code TextIdentifier}
+	 * labeled alternative in {@link YoltParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitTextIdentifier(YoltParser.TextIdentifierContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code NegativeExpression}
 	 * labeled alternative in {@link YoltParser#expr}.
@@ -364,14 +396,4 @@ public interface YoltListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitMulDivExpression(YoltParser.MulDivExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link YoltParser#number}.
-	 * @param ctx the parse tree
-	 */
-	void enterNumber(YoltParser.NumberContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link YoltParser#number}.
-	 * @param ctx the parse tree
-	 */
-	void exitNumber(YoltParser.NumberContext ctx);
 }

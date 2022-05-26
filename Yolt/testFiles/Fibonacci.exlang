@@ -1,17 +1,14 @@
-CLASS Epic()
+CLASS fibonacci()
 {
     FUNCTION main()
     {
-        NUMBER superfunny = 0;
-        NUMBER megafunny  = 5;
+        NUMBER superfunny = 15;
+        NUMBER megafunny  = superfunny + 10;
+        WORDS tekst = "Hello bitches";
+        SPEAK(megafunny);
 
 
-        REPEAT(superfunny < 69 && megafunny < superfunny):
-        {
-        SPEAK(superfunny);
-
-        superfunny += 1;
-        megafunny += 1;
-        }
+        SPEAK(megafunny);
+        SPEAK(tekst);
     }
 }

@@ -34,29 +34,29 @@ public interface YoltVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFunction_call(YoltParser.Function_callContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link YoltParser#int_declaration}.
+	 * Visit a parse tree produced by {@link YoltParser#var_declaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitInt_declaration(YoltParser.Int_declarationContext ctx);
+	T visitVar_declaration(YoltParser.Var_declarationContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link YoltParser#boolean_declaration}.
+	 * Visit a parse tree produced by {@link YoltParser#var_addition}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitBoolean_declaration(YoltParser.Boolean_declarationContext ctx);
+	T visitVar_addition(YoltParser.Var_additionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link YoltParser#string_declaration}.
+	 * Visit a parse tree produced by {@link YoltParser#var_addition_short}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitString_declaration(YoltParser.String_declarationContext ctx);
+	T visitVar_addition_short(YoltParser.Var_addition_shortContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link YoltParser#gold_declaration}.
+	 * Visit a parse tree produced by {@link YoltParser#string_addition_short}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitGold_declaration(YoltParser.Gold_declarationContext ctx);
+	T visitString_addition_short(YoltParser.String_addition_shortContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link YoltParser#prompt_input}.
 	 * @param ctx the parse tree
@@ -106,35 +106,17 @@ public interface YoltVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDo_while_loop(YoltParser.Do_while_loopContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link YoltParser#var_assignment}.
+	 * Visit a parse tree produced by {@link YoltParser#variables}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitVar_assignment(YoltParser.Var_assignmentContext ctx);
+	T visitVariables(YoltParser.VariablesContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link YoltParser#bool_assignment}.
+	 * Visit a parse tree produced by {@link YoltParser#break_statement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitBool_assignment(YoltParser.Bool_assignmentContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link YoltParser#var_addition}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitVar_addition(YoltParser.Var_additionContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link YoltParser#int_addition_short}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitInt_addition_short(YoltParser.Int_addition_shortContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link YoltParser#int_addition}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitInt_addition(YoltParser.Int_additionContext ctx);
+	T visitBreak_statement(YoltParser.Break_statementContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code LogicOr}
 	 * labeled alternative in {@link YoltParser#logic_expr}.
@@ -169,12 +151,6 @@ public interface YoltVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitPrint_stmt(YoltParser.Print_stmtContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link YoltParser#declarations}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitDeclarations(YoltParser.DeclarationsContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link YoltParser#statement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -195,6 +171,34 @@ public interface YoltVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitParanExpression(YoltParser.ParanExpressionContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code RandomIdentifier}
+	 * labeled alternative in {@link YoltParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRandomIdentifier(YoltParser.RandomIdentifierContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code VarIdentifier}
+	 * labeled alternative in {@link YoltParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVarIdentifier(YoltParser.VarIdentifierContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code IntIdentifier}
+	 * labeled alternative in {@link YoltParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIntIdentifier(YoltParser.IntIdentifierContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code StringIdentifier}
+	 * labeled alternative in {@link YoltParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStringIdentifier(YoltParser.StringIdentifierContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code PowModExpression}
 	 * labeled alternative in {@link YoltParser#expr}.
 	 * @param ctx the parse tree
@@ -202,12 +206,26 @@ public interface YoltVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitPowModExpression(YoltParser.PowModExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code NumberExpression}
+	 * Visit a parse tree produced by the {@code BoolIdentifier}
 	 * labeled alternative in {@link YoltParser#expr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitNumberExpression(YoltParser.NumberExpressionContext ctx);
+	T visitBoolIdentifier(YoltParser.BoolIdentifierContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code GoldIdentifier}
+	 * labeled alternative in {@link YoltParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGoldIdentifier(YoltParser.GoldIdentifierContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code TextIdentifier}
+	 * labeled alternative in {@link YoltParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTextIdentifier(YoltParser.TextIdentifierContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code NegativeExpression}
 	 * labeled alternative in {@link YoltParser#expr}.
@@ -222,10 +240,4 @@ public interface YoltVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitMulDivExpression(YoltParser.MulDivExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link YoltParser#number}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNumber(YoltParser.NumberContext ctx);
 }
