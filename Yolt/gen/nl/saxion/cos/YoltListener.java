@@ -37,6 +37,16 @@ public interface YoltListener extends ParseTreeListener {
 	 */
 	void exitFunction_declaration(YoltParser.Function_declarationContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link YoltParser#class_call}.
+	 * @param ctx the parse tree
+	 */
+	void enterClass_call(YoltParser.Class_callContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link YoltParser#class_call}.
+	 * @param ctx the parse tree
+	 */
+	void exitClass_call(YoltParser.Class_callContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link YoltParser#function_call}.
 	 * @param ctx the parse tree
 	 */
@@ -46,6 +56,16 @@ public interface YoltListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFunction_call(YoltParser.Function_callContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link YoltParser#global_var_declaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterGlobal_var_declaration(YoltParser.Global_var_declarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link YoltParser#global_var_declaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitGlobal_var_declaration(YoltParser.Global_var_declarationContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link YoltParser#var_declaration}.
 	 * @param ctx the parse tree

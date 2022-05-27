@@ -1,29 +1,10 @@
-CLASS fibonacci()
+CLASS fibonacci
 {
-    FUNCTION main()
-    {
-        NUMBER superfunny = 15;
-        superfunny = superfunny + superfunny;
-        WORDS tekst = "Hello bitches";
-
-        superfunny += 5;
-
-        REPEAT(superfunny < 20):
+        FUNCTION main()
         {
-        SPEAK(tekst);
-        }
-
-        IF(superfunny > 15):
-        {
-        SPEAK(tekst);
-        }
-
-
-        SPEAK(superfunny + 10);
-    }
-
-    FUNCTION pain()
-        {
-            NUMBER superfunny = 15;
+            WORDS welcome = "Hello!";
+            NUMBER epic = 10;
+            epic = RANDOM(epic + welcome);
+            SPEAK(epic);
         }
 }

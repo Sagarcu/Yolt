@@ -28,11 +28,23 @@ public interface YoltVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFunction_declaration(YoltParser.Function_declarationContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link YoltParser#class_call}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitClass_call(YoltParser.Class_callContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link YoltParser#function_call}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitFunction_call(YoltParser.Function_callContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link YoltParser#global_var_declaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGlobal_var_declaration(YoltParser.Global_var_declarationContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link YoltParser#var_declaration}.
 	 * @param ctx the parse tree

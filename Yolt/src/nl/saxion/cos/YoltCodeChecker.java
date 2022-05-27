@@ -3,11 +3,13 @@ package nl.saxion.cos;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
+import javax.xml.crypto.Data;
+
 public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
     private ParseTreeProperty<DataType> types;
     private ParseTreeProperty<Symbol> symbols;
     private Scope currentScope;
-    private int numLocals = 0;
+    private int numLocals = 0; //Start at 2 because i'm using 0, 1 and 2 for the gold :D.
 
 
     //TODO Consider adding infinite loop checker?
@@ -24,13 +26,13 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
         DataType type;
 
         if (ctx.INT() != null) type = DataType.INT;
-        else if (ctx.GOLD() != null) type = DataType.COINS;
+        else if (ctx.COINS() != null) type = DataType.COINS;
         else if (ctx.BOOLEAN() != null) type = DataType.BOOLEAN;
         else type = DataType.STRING;
 
         if (ctx.expr() != null)
         {
-            visit(ctx.expr());
+            visit(ctx.expr()); //Look if the possible expression is correct.
         }
 
         Symbol s = currentScope.lookupVariable(varName);
@@ -45,6 +47,33 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
             throw new YoltCompilerException("Trying to assign a " + expressionType + " to a " + type + ".");
 
         symbols.put(ctx, new Symbol(varName, type, numLocals));
+        return null;
+    }
+
+    @Override
+    public DataType visitGlobal_var_declaration(YoltParser.Global_var_declarationContext ctx) {
+        //TODO COME UP WITH WHAT NEEDS TO BE DONE HERE! Also think about static or remove static.
+        String varName = ctx.IDENTIFIER().toString();
+        DataType type;
+
+        if (ctx.INT() != null) type = DataType.INT;
+        else if (ctx.COINS() != null) type = DataType.COINS;
+        else if (ctx.BOOLEAN() != null) type = DataType.BOOLEAN;
+        else type = DataType.STRING;
+
+        Symbol s = currentScope.lookupVariable(varName);
+        if( s != null )
+            throw new YoltCompilerException("The variable " + varName + " has already been initialized.");
+
+        numLocals++;
+        currentScope.declareVariable(new Symbol(varName, type, numLocals));
+
+        DataType expressionType = visit(ctx.expr());
+        if( type != expressionType )
+            throw new YoltCompilerException("Trying to assign a " + expressionType + " to a " + type + ".");
+
+        symbols.put(ctx, new Symbol(varName, type, numLocals));
+
         return null;
     }
 
@@ -89,6 +118,8 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
             throw new YoltCompilerException("Can't compare " + expressionType);
         }
 
+
+
         if( expressionType != expressionType2 )
         {
             throw new YoltCompilerException("Can't compare " + expressionType + " with " + expressionType2);
@@ -97,6 +128,13 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
     }
 
 
+    @Override
+    public DataType visitClass_declaration(YoltParser.Class_declarationContext ctx) {
+        currentScope = currentScope.openScope();
+        visitChildren(ctx);
+        currentScope = currentScope.closeScope();
+        return null;
+    }
 
     @Override
     public DataType visitFunction_declaration(YoltParser.Function_declarationContext ctx) {
@@ -153,9 +191,13 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
     public DataType visitAddSubExpression(YoltParser.AddSubExpressionContext ctx) {
         DataType leftType = visit(ctx.left);
         DataType rightType = visit(ctx.right);
-        //TODO Consider it being possible to add strings with ints and ints with coins or smth.
-        if( leftType != rightType) throw new YoltCompilerException("Type of left and right are not the same!");
-        if (!(leftType == DataType.INT || leftType == DataType.COINS)) throw new YoltCompilerException("Type is not Int or Coins.");
+        if(leftType != rightType)
+        {
+            if (!(leftType == DataType.COINS || leftType == DataType.INT && rightType == DataType.COINS || rightType == DataType.INT))
+            {
+                throw new YoltCompilerException("Can't do mathematical expressions on mismatched types [" + leftType + "] and [" + rightType + "].");
+            }
+        }
 
         return addType(ctx, leftType);
     }
@@ -164,8 +206,13 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
     public DataType visitPowModExpression(YoltParser.PowModExpressionContext ctx) {
         DataType leftType = visit(ctx.left);
         DataType rightType = visit(ctx.right);
-        if( leftType != rightType) throw new YoltCompilerException("Type of left and right are not the same!");
-        if (!(leftType == DataType.INT || leftType == DataType.COINS)) throw new YoltCompilerException("Type is not Int or Coins.");
+        if(leftType != rightType)
+        {
+            if (!(leftType == DataType.COINS || leftType == DataType.INT && rightType == DataType.COINS || rightType == DataType.INT))
+            {
+                throw new YoltCompilerException("Can't do mathematical expressions on mismatched types [" + leftType + "] and [" + rightType + "].");
+            }
+        }
 
         return addType(ctx, leftType);
     }
@@ -174,11 +221,35 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
     public DataType visitMulDivExpression(YoltParser.MulDivExpressionContext ctx) {
         DataType leftType = visit(ctx.left);
         DataType rightType = visit(ctx.right);
-        if( leftType != rightType) throw new YoltCompilerException("Type of left and right are not the same!");
-        if (!(leftType == DataType.INT || leftType == DataType.COINS)) throw new YoltCompilerException("Type is not Int or Coins.");
 
+
+        if(leftType != rightType)
+        {
+            if (!(leftType == DataType.COINS || leftType == DataType.INT && rightType == DataType.COINS || rightType == DataType.INT))
+            {
+                throw new YoltCompilerException("Can't do mathematical expressions on mismatched types [" + leftType + "] and [" + rightType + "].");
+            }
+        }
         return addType(ctx, leftType);
     }
+
+    @Override
+    public DataType visitPrompt_input(YoltParser.Prompt_inputContext ctx) {
+        if (ctx.INT() != null) return addType( ctx, DataType.INT);
+        else return addType(ctx, DataType.STRING);
+    }
+
+    @Override
+    public DataType visitRandom_input(YoltParser.Random_inputContext ctx) {
+
+        if (visit(ctx.expr()) == DataType.INT || visit(ctx.expr()) == DataType.COINS)
+        {
+            return addType( ctx, DataType.INT);
+        }
+        throw new YoltCompilerException("Random input has to be either INT or COIN");
+    }
+
+
 
     private DataType addType(ParseTree node, DataType type) {
         types.put(node, type);

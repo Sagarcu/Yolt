@@ -51,6 +51,18 @@ public class YoltBaseListener implements YoltListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterClass_call(YoltParser.Class_callContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitClass_call(YoltParser.Class_callContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterFunction_call(YoltParser.Function_callContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -58,6 +70,18 @@ public class YoltBaseListener implements YoltListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitFunction_call(YoltParser.Function_callContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterGlobal_var_declaration(YoltParser.Global_var_declarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGlobal_var_declaration(YoltParser.Global_var_declarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
