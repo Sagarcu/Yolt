@@ -99,37 +99,25 @@ public class YoltBaseListener implements YoltListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterVar_addition(YoltParser.Var_additionContext ctx) { }
+	@Override public void enterVar_assignment(YoltParser.Var_assignmentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitVar_addition(YoltParser.Var_additionContext ctx) { }
+	@Override public void exitVar_assignment(YoltParser.Var_assignmentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterVar_addition_short(YoltParser.Var_addition_shortContext ctx) { }
+	@Override public void enterVar_assignment_short(YoltParser.Var_assignment_shortContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitVar_addition_short(YoltParser.Var_addition_shortContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterString_addition_short(YoltParser.String_addition_shortContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitString_addition_short(YoltParser.String_addition_shortContext ctx) { }
+	@Override public void exitVar_assignment_short(YoltParser.Var_assignment_shortContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -255,54 +243,6 @@ public class YoltBaseListener implements YoltListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterLogicOr(YoltParser.LogicOrContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitLogicOr(YoltParser.LogicOrContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterValueExpression(YoltParser.ValueExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitValueExpression(YoltParser.ValueExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterLogicAnd(YoltParser.LogicAndContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitLogicAnd(YoltParser.LogicAndContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterCompare_values(YoltParser.Compare_valuesContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitCompare_values(YoltParser.Compare_valuesContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterPrint_stmt(YoltParser.Print_stmtContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -310,18 +250,6 @@ public class YoltBaseListener implements YoltListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitPrint_stmt(YoltParser.Print_stmtContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterStatement(YoltParser.StatementContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitStatement(YoltParser.StatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -423,13 +351,13 @@ public class YoltBaseListener implements YoltListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGoldIdentifier(YoltParser.GoldIdentifierContext ctx) { }
+	@Override public void enterCoinIdentifier(YoltParser.CoinIdentifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGoldIdentifier(YoltParser.GoldIdentifierContext ctx) { }
+	@Override public void exitCoinIdentifier(YoltParser.CoinIdentifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -447,18 +375,6 @@ public class YoltBaseListener implements YoltListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNegativeExpression(YoltParser.NegativeExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitNegativeExpression(YoltParser.NegativeExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterMulDivExpression(YoltParser.MulDivExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -466,6 +382,66 @@ public class YoltBaseListener implements YoltListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitMulDivExpression(YoltParser.MulDivExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterLogicOr(YoltParser.LogicOrContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitLogicOr(YoltParser.LogicOrContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterValueExpression(YoltParser.ValueExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitValueExpression(YoltParser.ValueExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterLogicAnd(YoltParser.LogicAndContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitLogicAnd(YoltParser.LogicAndContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterCompare_values(YoltParser.Compare_valuesContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCompare_values(YoltParser.Compare_valuesContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterStatement(YoltParser.StatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStatement(YoltParser.StatementContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

@@ -11,13 +11,18 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
     private Scope currentScope;
     private int numLocals = 0; //Start at 2 because i'm using 0, 1 and 2 for the gold :D.
 
-
+    //TODO LOOK IF THERE ARE ANY MORE THIGNS WE WANT TO CHECK?!
     //TODO Consider adding infinite loop checker?
-    //TODO Consider adding break statement checker?
     public YoltCodeChecker(ParseTreeProperty<DataType> types, ParseTreeProperty<Symbol> symbols) {
         this.types = types;
         this.symbols = symbols;
         currentScope = new Scope();
+    }
+
+    @Override
+    public DataType visitBreak_statement(YoltParser.Break_statementContext ctx) {
+        //TODO ADD BREAK STATEMENT CHECKER! SHOULD ONLY BE ABLE TO EXIST WITHIN A LOOP!
+        return null;
     }
 
     @Override
@@ -78,7 +83,7 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
     }
 
     @Override
-    public DataType visitVar_addition(YoltParser.Var_additionContext ctx) {
+    public DataType visitVar_assignment(YoltParser.Var_assignmentContext ctx) {
         String varName = ctx.IDENTIFIER().getText();
         Symbol s = currentScope.lookupVariable(varName);
         if( s == null )
@@ -94,7 +99,7 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
     }
 
     @Override
-    public DataType visitVar_addition_short(YoltParser.Var_addition_shortContext ctx) {
+    public DataType visitVar_assignment_short(YoltParser.Var_assignment_shortContext ctx) {
         String varName = ctx.IDENTIFIER().getText();
         Symbol s = currentScope.lookupVariable(varName);
         if( s == null )
@@ -118,11 +123,12 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
             throw new YoltCompilerException("Can't compare " + expressionType);
         }
 
-
-
-        if( expressionType != expressionType2 )
+        if(expressionType != expressionType2)
         {
-            throw new YoltCompilerException("Can't compare " + expressionType + " with " + expressionType2);
+            if (!(expressionType == DataType.COINS || expressionType == DataType.INT && expressionType2 == DataType.COINS || expressionType2 == DataType.INT))
+            {
+                throw new YoltCompilerException("Can't compare on mismatched types [" + expressionType + "] and [" + expressionType2 + "].");
+            }
         }
         return super.visitCompare_values(ctx);
     }
@@ -143,6 +149,8 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
         currentScope = currentScope.closeScope();
         return null;
     }
+
+
 
     @Override
     public DataType visitVarIdentifier(YoltParser.VarIdentifierContext ctx) {
@@ -171,14 +179,8 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
     }
 
     @Override
-    public DataType visitGoldIdentifier(YoltParser.GoldIdentifierContext ctx) {
+    public DataType visitCoinIdentifier(YoltParser.CoinIdentifierContext ctx) {
         return addType( ctx, DataType.COINS );
-    }
-
-    @Override
-    public DataType visitNegativeExpression(YoltParser.NegativeExpressionContext ctx) {
-        DataType subtype = visit(ctx.expr());
-        return addType( ctx, subtype );
     }
 
     @Override
@@ -191,12 +193,17 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
     public DataType visitAddSubExpression(YoltParser.AddSubExpressionContext ctx) {
         DataType leftType = visit(ctx.left);
         DataType rightType = visit(ctx.right);
-        if(leftType != rightType)
+
+        if (leftType == DataType.STRING || rightType == DataType.STRING)
         {
-            if (!(leftType == DataType.COINS || leftType == DataType.INT && rightType == DataType.COINS || rightType == DataType.INT))
+            if (ctx.SUB() != null)
             {
-                throw new YoltCompilerException("Can't do mathematical expressions on mismatched types [" + leftType + "] and [" + rightType + "].");
+                throw new YoltCompilerException("Can't do SUB String expressions.");
             }
+            return addType(ctx, DataType.STRING); //We always return a string if we try to add them together!
+        } else if (!(leftType == DataType.COINS || leftType == DataType.INT) && !(rightType == DataType.INT || rightType == DataType.COINS))
+        {
+            throw new YoltCompilerException("Can't do mathematical expressions on mismatched types [" + leftType + "] and [" + rightType + "].");
         }
 
         return addType(ctx, leftType);
@@ -206,6 +213,12 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
     public DataType visitPowModExpression(YoltParser.PowModExpressionContext ctx) {
         DataType leftType = visit(ctx.left);
         DataType rightType = visit(ctx.right);
+
+        if (leftType == DataType.STRING || rightType == DataType.STRING)
+        {
+            throw new YoltCompilerException("Can't do POW/MOD on String expressions.");
+        }
+
         if(leftType != rightType)
         {
             if (!(leftType == DataType.COINS || leftType == DataType.INT && rightType == DataType.COINS || rightType == DataType.INT))
@@ -222,6 +235,10 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
         DataType leftType = visit(ctx.left);
         DataType rightType = visit(ctx.right);
 
+        if (leftType == DataType.STRING || rightType == DataType.STRING)
+        {
+            throw new YoltCompilerException("Can't do MUL/DIV on String expressions.");
+        }
 
         if(leftType != rightType)
         {

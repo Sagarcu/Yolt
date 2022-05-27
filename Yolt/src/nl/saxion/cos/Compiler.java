@@ -11,8 +11,6 @@ import java.nio.file.Paths;
 /**
  * Compiles source code in a custom language into Jasmin and then assembles a
  * JVM-compatible .class file.
- *
- * Check the TODO's.
  */
 public class Compiler {
 	/**
@@ -89,13 +87,6 @@ public class Compiler {
 		YoltParser parser = new YoltParser(tokens);
 		parser.addErrorListener(getErrorListener());
 
-
-		/* TODO Remove these tests things.
-		ParseTree parseTree = parser.application();
-		System.out.println(parseTree.getChildCount());
-		System.out.println(parseTree.getChild(0).getChildCount());
-		System.out.println(parseTree.getChild(1).getChildCount()); */
-
 		return parser.application();
 	}
 
@@ -115,14 +106,6 @@ public class Compiler {
 			System.err.println(ce.getMessage());
 			return false;
 		}
-
-		// TODO: Create your own checker that inherits from a BaseVisitor, e.g. ExampleLangBaseVisitor.
-		//       Call the visit() method with the parseTree as parameter. In that visitor, you check for
-		//       errors in the source code. Examples of errors you may want to check for:
-		//         - A variable is used before it was declared
-		//         - The user is trying to assign a value to a variable with a different type
-		//         - An if-statement has a condition that is not a boolean
-		//         - An expression mixes values of incompatible data types
 	}
 
 	/**
