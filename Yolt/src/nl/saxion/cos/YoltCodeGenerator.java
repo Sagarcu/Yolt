@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+//TODO: Add function support.
 
 @SuppressWarnings("DuplicatedCode")
 public class YoltCodeGenerator extends YoltBaseVisitor< Void > {
@@ -199,9 +200,6 @@ public class YoltCodeGenerator extends YoltBaseVisitor< Void > {
         return null;
     }
 
-
-
-
     @Override
     public Void visitLogicAnd(YoltParser.LogicAndContext ctx) {
         visit(ctx.logic_expr(0));
@@ -209,13 +207,13 @@ public class YoltCodeGenerator extends YoltBaseVisitor< Void > {
 
         jasminCode.add("ifeq false_" + boolnr); //If it is false the result of the statement will always be false.
         jasminCode.add("ifeq false2_" + boolnr);
-        jasminCode.add("ldc 1"); //Both are true, so the value we add on the stack is also true!
+        jasminCode.add("iconst_1"); //Both are true, so the value we add on the stack is also true!
         jasminCode.add("goto endcmp_" + boolnr);
 
         jasminCode.add("false_" + boolnr +":"); //First value is false, so statement is false.
         jasminCode.add("pop"); //Pop this value, we don't care about it really since it doesn't matter if it is true or false.
         jasminCode.add("false2_" + boolnr +":"); //Second value is false, so statement is false.
-        jasminCode.add("ldc 0");
+        jasminCode.add("iconst_0");
 
         jasminCode.add("endcmp_" + boolnr + ":");
         boolnr++;
@@ -229,16 +227,16 @@ public class YoltCodeGenerator extends YoltBaseVisitor< Void > {
 
         jasminCode.add("ifeq false_" + boolnr); //If the first value is false we go and check if the second value is also false.
         jasminCode.add("pop"); //It wasn't false, so we can remove the first one and tell our result was true.
-        jasminCode.add("ldc 1"); //Add true on the stack.
+        jasminCode.add("iconst_1"); //Add true on the stack.
         jasminCode.add("goto endcmp_" + boolnr); //Go to end of choice.
 
         jasminCode.add("false_" + boolnr +":"); //Check if the second value perhaps is true.
         jasminCode.add("ifeq false2_" + boolnr);//
-        jasminCode.add("ldc 1"); //TODO Consider changing this to a -1 and store this in magic_value. Then at end load magic value and see if it is -1, indicating it is true.
+        jasminCode.add("iconst_1"); //TODO Consider changing this to a -1 and store this in magic_value. Then at end load magic value and see if it is -1, indicating it is true.
         jasminCode.add("goto endcmp_" + boolnr);
 
         jasminCode.add("false2_" + boolnr +":");
-        jasminCode.add("ldc 0");
+        jasminCode.add("iconst_0");
 
         jasminCode.add("endcmp_" + boolnr + ":");
         boolnr++;
@@ -250,23 +248,22 @@ public class YoltCodeGenerator extends YoltBaseVisitor< Void > {
         visit(ctx.expr(0));
         visit(ctx.expr(1));
 
+
+
         if (ctx.LOGIC_EQUAL() != null) jasminCode.add("if_icmpeq true_" + boolnr);
         else if (ctx.LOGIC_BIGGER() != null) jasminCode.add("if_icmpgt true_"+ boolnr);
         else if (ctx.LOGIC_BIGGER_EQUAL() != null) jasminCode.add("if_icmpge true_"+ boolnr);
         else if (ctx.LOGIC_LOWER() != null) jasminCode.add("if_icmple true_"+ boolnr);
         else if (ctx.LOGIC_LOWER_EQUAL() != null) jasminCode.add("if_icmplt true_"+ boolnr);
 
-        jasminCode.add("ldc 0"); //False
+        jasminCode.add("iconst_0"); //False
         jasminCode.add("goto endcmp_" + boolnr);
 
         jasminCode.add("true_" + boolnr +":"); //True.
-        jasminCode.add("ldc 1");
+        jasminCode.add("iconst_1");
 
         jasminCode.add("endcmp_" + boolnr + ":");
         boolnr++;
-
-
-        //Should return in a boolean, 1 equals true, 0 equals false.
 
         return null;
     }
@@ -412,12 +409,12 @@ public class YoltCodeGenerator extends YoltBaseVisitor< Void > {
 
     @Override
     public Void visitVar_addition_short(YoltParser.Var_addition_shortContext ctx) {
-
+        visit(ctx.expr());
         Symbol s = symbols.get(ctx);
 
         if (s.getType() == DataType.INT)
         {
-            jasminCode.add("iinc " + s.getLocalSlot() + " " + ctx.INT_VALUE().toString());
+            //jasminCode.add("iadd " + s.getLocalSlot() + " " + ctx.expr().toString()); //TODO FIX.
         } else if (s.getType() == DataType.COINS)
         {
             //TODO FIX THIS SO IT ADDS GOLD VALUE

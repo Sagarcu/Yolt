@@ -3,12 +3,27 @@ CLASS fibonacci()
     FUNCTION main()
     {
         NUMBER superfunny = 15;
-        NUMBER megafunny  = superfunny + 10;
+        superfunny = superfunny + superfunny;
         WORDS tekst = "Hello bitches";
-        SPEAK(megafunny);
 
+        superfunny += 5;
 
-        SPEAK(megafunny);
+        REPEAT(superfunny < 20):
+        {
         SPEAK(tekst);
+        }
+
+        IF(superfunny > 15):
+        {
+        SPEAK(tekst);
+        }
+
+
+        SPEAK(superfunny + 10);
     }
+
+    FUNCTION pain()
+        {
+            NUMBER superfunny = 15;
+        }
 }
