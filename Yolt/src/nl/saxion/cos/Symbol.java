@@ -1,9 +1,9 @@
 package nl.saxion.cos;
 
 public class Symbol {
-    private String name;
-    private DataType type;
-    private int localSlot;
+    private final String name;
+    private final DataType type;
+    private final int localSlot;
 
     public Symbol(String name, DataType type, int localSlot) {
         this.name = name;

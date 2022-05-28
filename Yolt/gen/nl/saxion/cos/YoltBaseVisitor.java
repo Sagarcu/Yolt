@@ -23,21 +23,7 @@ public class YoltBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements Y
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitClass_declaration(YoltParser.Class_declarationContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
 	@Override public T visitFunction_declaration(YoltParser.Function_declarationContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitClass_call(YoltParser.Class_callContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -164,6 +150,13 @@ public class YoltBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements Y
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitParanExpression(YoltParser.ParanExpressionContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitFunctionExpression(YoltParser.FunctionExpressionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

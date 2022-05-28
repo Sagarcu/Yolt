@@ -18,31 +18,37 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
 
     private final ParseTreeProperty<DataType> types;
     private final ParseTreeProperty<Symbol> symbols;
+    private final ParseTreeProperty<FunctionType> functionTypes;
+    private final ParseTreeProperty<FunctionSymbol> functionSymbols;
+
+
     private final ArrayList<String> jasminCode = new ArrayList<>();
+
+    private final String className; //Name of our class.
+    private Boolean createdInit = false;
 
     public YoltCodeGenerator(
                           ParseTreeProperty<DataType> types,
-                          ParseTreeProperty<Symbol> symbols ) {
+                          ParseTreeProperty<Symbol> symbols,
+                          ParseTreeProperty<FunctionType> functionTypes,
+                          ParseTreeProperty<FunctionSymbol> functionSymbols,
+                          String standardName) {
         this.types = types;
         this.symbols = symbols;
+        this.functionTypes = functionTypes;
+        this.functionSymbols = functionSymbols;
+        this.className = standardName;
     }
 
     @Override
     public Void visitApplication(YoltParser.ApplicationContext ctx) {
-        //TODO Update this so it works with main class and stuff.
-        if (ctx.class_declaration() != null) visit(ctx.class_declaration()); //Check our Classes
-        else
-        {
-            jasminCode.add(".class public undefined");
-            jasminCode.add(".super java/lang/Object");
-            jasminCode.add("");
+        jasminCode.add(".class public " + className);
+        jasminCode.add(".super java/lang/Object");
+        jasminCode.add("");
 
-            jasminCode.add(".method public <init>()V");
-            jasminCode.add("aload_0");
-            jasminCode.add("invokenonvirtual java/lang/Object/<init>()V");
-            jasminCode.add("return");
-            jasminCode.add(".end method");
-            jasminCode.add("");
+        for(int i = 0; i < ctx.global_var_declaration().size(); i++)
+        {
+            visit(ctx.global_var_declaration(i));
         }
 
         for(int i = 0; i < ctx.function_declaration().size(); i++) //Check our functions.
@@ -50,49 +56,143 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
             visit(ctx.function_declaration(i)); //Visit all our functions
         }
 
-        return null;
-    }
-
-    @Override
-    public Void visitClass_declaration(YoltParser.Class_declarationContext ctx) {
-        jasminCode.add(".class public " + ctx.IDENTIFIER()); //Create our class.
-        jasminCode.add(".super java/lang/Object");
-        jasminCode.add("");
-
-        for(int i = 0; i < ctx.global_var_declaration().size(); i++)
-        {
-            visit(ctx.global_var_declaration(i)); //Our global variables.
-        }
-
-        jasminCode.add(".method public <init>()V"); //Create init method as entrypoint for the code.
-        jasminCode.add("aload_0");
-        jasminCode.add("invokenonvirtual java/lang/Object/<init>()V");
-        jasminCode.add("return");
-        jasminCode.add(".end method");
-        jasminCode.add("");
-
-        for(int i = 0; i < ctx.function_declaration().size(); i++)
-        {
-            visit(ctx.function_declaration(i)); //Visit all the functions inside the class.
+        if (!createdInit) //TODO CONSIDER MOVING LATER TO ABOVE ALL FUNCTIONS? BUT NEED INFO FROM CODECHECKER THEN!
+        { //Creates a standard initialize.
+            jasminCode.add(".method public <init>()V");
+            jasminCode.add(".limit stack 99");
+            jasminCode.add(".limit locals 99");
+            jasminCode.add("aload_0");
+            jasminCode.add("invokenonvirtual java/lang/Object/<init>()V");
+            jasminCode.add("return");
+            jasminCode.add(".end method");
+            jasminCode.add("");
         }
         return null;
     }
 
     @Override
     public Void visitFunction_declaration(YoltParser.Function_declarationContext ctx) {
-        jasminCode.add(".method public static "+ ctx.IDENTIFIER() +"([Ljava/lang/String;)V");
-        jasminCode.add(".limit stack 99");
-        jasminCode.add(".limit locals 99");
-        jasminCode.add("");
-
-        for(int i = 0; i < ctx.statement().size(); i++)
+        if (!createdInit && ctx.IDENTIFIER().toString().equals(className)) //Init method. //TODO SHOULD BE CORRECT NOW!
         {
-            visit(ctx.statement(i)); //visit all our statements inside our function.
+            createdInit = true;
+            jasminCode.add(".method public <init>()V"); //Create init method.
+            jasminCode.add(".limit stack 99");
+            jasminCode.add(".limit locals 99");
+            jasminCode.add("aload_0");
+            jasminCode.add("invokenonvirtual java/lang/Object/<init>()V");
+
+            for(int i = 0; i < ctx.statement().size(); i++) //Anything we want to do within the initializer.
+            {
+                visit(ctx.statement(i)); //visit all our statements inside initialize.
+            }
+
+            jasminCode.add("return");
+
+        } else if (ctx.IDENTIFIER().toString().equals("main")) //Main method. //TODO UPDATE
+        {
+            jasminCode.add(".method public static main([Ljava/lang/String;)V"); //Create init method as entrypoint for the code.
+            jasminCode.add(".limit stack 99");
+            jasminCode.add(".limit locals 99");
+            jasminCode.add("new " + className);
+            jasminCode.add("dup");
+            jasminCode.add("invokenonvirtual " + className + "/<init>()V");
+            jasminCode.add("astore 1");
+            jasminCode.add("");
+            //jasminCode.add("new " + className); //TODO MOVE OUTSIDE OF HERE!
+            //jasminCode.add("dup");
+            //jasminCode.add("invokenonvirtual " + className + "/<init>()V");
+
+            for(int i = 0; i < ctx.statement().size(); i++)
+            {
+                visit(ctx.statement(i)); //visit all our statements inside our function.
+            }
+            jasminCode.add("return");
+        } else //All other methods!
+        {
+            StringBuilder jasmin = new StringBuilder(".method public ");
+            jasmin.append(ctx.IDENTIFIER().toString());
+            jasmin.append("(");
+
+            FunctionSymbol fs = functionSymbols.get(ctx);
+
+            for(int i = 0; i < fs.getTypes().size(); i++)
+            {
+                if (i > 0)
+                {
+                    jasmin.append(", ");
+                }
+
+                if(fs.getTypes().get(i).equals(DataType.INT)) jasmin.append("I");
+            }
+            jasmin.append(")");
+
+            if (fs.getFunctionType() == FunctionType.STRING || fs.getFunctionType() == FunctionType.VOID) jasmin.append("V");
+            else jasmin.append("I");
+
+            jasminCode.add(jasmin.toString());
+            jasminCode.add(".limit stack 99");
+            jasminCode.add(".limit locals 99");
+            jasminCode.add("");
+
+            for(int i = 0; i < ctx.statement().size(); i++)
+            {
+                visit(ctx.statement(i)); //visit all our statements inside our function.
+            }
+
+            if (fs.getFunctionType() == FunctionType.INT || fs.getFunctionType() == FunctionType.COINS || fs.getFunctionType() == FunctionType.BOOLEAN)
+            {
+                visit(ctx.return_statement());
+                jasminCode.add("ireturn");
+            } else if (fs.getFunctionType() == FunctionType.STRING)
+            {
+                visit(ctx.return_statement());
+                jasminCode.add("areturn");
+            } else
+            {
+                jasminCode.add("return");
+            }
         }
 
-        jasminCode.add("return"); //TODO CHANGE TO ACTUAL RETURN INSTEAD OF RETURNING NOTHING
         jasminCode.add(".end method");
         jasminCode.add("");
+
+
+        return null;
+    }
+
+    @Override //TODO TYPECHECK!!!
+    public Void visitFunction_call(YoltParser.Function_callContext ctx) {
+        jasminCode.add("aload 1");
+        jasminCode.add("invokevirtual " + className + "/" + ctx.IDENTIFIER() + "()V");
+        return null;
+    }
+
+    @Override
+    public Void visitFunctionExpression(YoltParser.FunctionExpressionContext ctx) {
+        //Function symbol here instead of function type.
+        FunctionSymbol fs = functionSymbols.get(ctx);
+
+        StringBuilder parameters = new StringBuilder("");
+
+        for(int i = 0; i < fs.getTypes().size(); i++)
+        {
+            if(fs.getTypes().get(i).equals(DataType.INT)) parameters.append("I");
+            //TODO add the parameters for the function here!
+        }
+
+        jasminCode.add("aload 1"); //Load class onto stack.
+
+        visit(ctx.function_call().expr(0)); //TODO update so it looks at all.
+
+        if(fs.getFunctionType().equals(FunctionType.STRING) || fs.getFunctionType().equals(FunctionType.VOID)) jasminCode.add("invokevirtual " + className + "/" +ctx.function_call().IDENTIFIER().toString() +"(" + parameters + ")V");
+        else jasminCode.add("invokevirtual " + className + "/" +ctx.function_call().IDENTIFIER().toString() +"(" + parameters + ")I");
+
+
+
+        //TODO typecheck in codechecker!
+        //ctx.function_call().expr();
+        //jasminCode.add("invokevirtual " + className + "/" + ctx.function_call().expr() + "I");
+
         return null;
     }
 
@@ -120,6 +220,10 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
 
         return null;
     }
+
+
+
+
 
     @Override
     public Void visitIf_statement(YoltParser.If_statementContext ctx) {
@@ -409,7 +513,6 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
         return null;
     }
 
-
     @Override
     public Void visitPrint_stmt(YoltParser.Print_stmtContext ctx) {
         jasminCode.add("getstatic java/lang/System/out Ljava/io/PrintStream;");
@@ -421,7 +524,7 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
         //System.out.println(37815 / 2898);
 
 
-        if( types.get(ctx.expr()) == DataType.INT )
+        if( types.get(ctx.expr()) == DataType.INT)
             jasminCode.add("invokevirtual java/io/PrintStream/println(I)V");
         else if( types.get(ctx.expr()) == DataType.STRING )
             jasminCode.add("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
@@ -430,11 +533,12 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
             generateBooleanJasmin();
             jasminCode.add("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
         } else if (types.get(ctx.expr()) == DataType.COINS)
-        { //TODO MAKE IT CONTECANATE THING HERE!
+        {
            generateCoinsJasmin();
            jasminCode.add("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
         }
-        else throw new YoltCompilerException("Unknown type in print");
+
+        //else throw new YoltCompilerException("Unknown type in print");
 
 
 
@@ -584,15 +688,23 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
         return null;
     }
 
+    /*
     @Override
     public Void visitRandomIdentifier(YoltParser.RandomIdentifierContext ctx) {
         visit(ctx.random_input());
+        return null;
+    } */ //Uncomment if shit with the random is suddenly broken!.
+
+
+    @Override
+    public Void visitReturn_statement(YoltParser.Return_statementContext ctx) {
+        visit(ctx.expr()); //This gets our return value on the stack.
         return null;
     }
 
     @Override
     public Void visitStatement(YoltParser.StatementContext ctx) {
-        jasminCode.add(""); //Makes the bytecode look a little better in my opinion by splitting statements up.
+        //jasminCode.add(""); //Sometimes makes the jasmin a bit easier to decipher.
         return super.visitStatement(ctx);
     }
 
@@ -632,7 +744,7 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
         jasminCode.add("invokevirtual java/lang/StringBuilder/toString()Ljava/lang/String;");
     }
 
-    private void generateBooleanJasmin() //The boolean should already be on the stack!
+    private void generateBooleanJasmin() //The boolean value should already be on the stack!
     {
         jasminCode.add("ifeq false_" + boolnr);
         jasminCode.add("ldc \"TRUE\"");

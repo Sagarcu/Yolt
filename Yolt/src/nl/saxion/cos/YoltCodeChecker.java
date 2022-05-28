@@ -3,26 +3,34 @@ package nl.saxion.cos;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
-import javax.xml.crypto.Data;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
-    private ParseTreeProperty<DataType> types;
-    private ParseTreeProperty<Symbol> symbols;
+    private final ParseTreeProperty<DataType> types;
+    private final ParseTreeProperty<FunctionType> functionTypes; //TODO Perhaps remove.
+    private final ParseTreeProperty<Symbol> symbols;
+    private final ParseTreeProperty<FunctionSymbol> functionSymbols; //TODO Perhaps remove.
+    private final Map<String, FunctionSymbol> functions;
+
+    private YoltParser parser; //Used temporarily to be able to search through children.
+
+
+
     private Scope currentScope;
-    private int numLocals = 0; //Start at 2 because i'm using 0, 1 and 2 for the gold :D.
-
-    //TODO LOOK IF THERE ARE ANY MORE THIGNS WE WANT TO CHECK?!
+    private int numLocals = 1; //Start at 2 because i'm using 0 and 1!
+    //TODO LOOK IF THERE ARE ANY MORE THINGS WE WANT TO CHECK?!
     //TODO Consider adding infinite loop checker?
-    public YoltCodeChecker(ParseTreeProperty<DataType> types, ParseTreeProperty<Symbol> symbols) {
+    public YoltCodeChecker(ParseTreeProperty<DataType> types, ParseTreeProperty<FunctionType> functionType, ParseTreeProperty<Symbol> symbols, ParseTreeProperty<FunctionSymbol> functionSymbols, Map<String, FunctionSymbol> functions, YoltParser parser) {
         this.types = types;
+        this.functionTypes = functionType;
         this.symbols = symbols;
+        this.functionSymbols = functionSymbols;
+        this.parser = parser;
+        this.functions = functions;
         currentScope = new Scope();
-    }
-
-    @Override
-    public DataType visitBreak_statement(YoltParser.Break_statementContext ctx) {
-        //TODO ADD BREAK STATEMENT CHECKER! SHOULD ONLY BE ABLE TO EXIST WITHIN A LOOP!
-        return null;
     }
 
     @Override
@@ -48,10 +56,57 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
         currentScope.declareVariable(new Symbol(varName, type, numLocals));
 
         DataType expressionType = visit(ctx.expr());
-        if( type != expressionType )
-            throw new YoltCompilerException("Trying to assign a " + expressionType + " to a " + type + ".");
+        //if( type != expressionType )
+        //    throw new YoltCompilerException("Trying to assign a " + expressionType + " to a " + type + ".");
 
         symbols.put(ctx, new Symbol(varName, type, numLocals));
+        return null;
+    }
+
+    @Override
+    public DataType visitFunction_declaration(YoltParser.Function_declarationContext ctx) {
+        currentScope = currentScope.openScope();
+        visitChildren(ctx);
+
+        String functionName = ctx.IDENTIFIER().toString();
+        FunctionSymbol currentFunction = functions.get(functionName);
+        functionSymbols.put(ctx, currentFunction);
+
+        currentScope = currentScope.closeScope();
+        return null;
+    }
+
+
+    @Override
+    public DataType visitFunctionExpression(YoltParser.FunctionExpressionContext ctx) {
+
+        String functionName = ctx.function_call().IDENTIFIER().toString();
+
+        FunctionSymbol currentFunction = functions.get(functionName);
+        if(currentFunction == null)
+        {
+            throw new YoltCompilerException("No function named " + functionName + " found!");
+        }
+
+        functionSymbols.put(ctx, currentFunction);
+
+
+        for(int i = 0; i < currentFunction.getTypes().size(); i++)
+        {
+            //TODO TYPECHECK THE EXTRA VARIABLES IT RECEIVES!
+            //if(currentFunction.getTypes().get(i) != ctx.function_call().expr(i))
+        }
+
+        for(DataType dataType: currentFunction.getTypes())
+        {
+
+        }
+
+        //Check for missing variables.
+        //Find out what kind of value it is expecting back! We have to do this by saving our functions and then finding the name and then reading the type to get the correct type.
+        System.out.println(ctx.function_call().IDENTIFIER().toString());
+
+        //return super.visitFunctionExpression(ctx);
         return null;
     }
 
@@ -133,28 +188,32 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
         return super.visitCompare_values(ctx);
     }
 
-
     @Override
-    public DataType visitClass_declaration(YoltParser.Class_declarationContext ctx) {
+    public DataType visitApplication(YoltParser.ApplicationContext ctx) {
+        boolean main = false;
+
+        for(int i = 0; i < ctx.function_declaration().size(); i++)
+        {
+            if (ctx.function_declaration(i).IDENTIFIER().toString().equals("main"))
+            {
+                main = true;
+                break;
+            }
+        }
+
+        if (!main) throw new YoltCompilerException("No entrypoint found. Please add a FUNCTION main");
+
+
         currentScope = currentScope.openScope();
         visitChildren(ctx);
         currentScope = currentScope.closeScope();
         return null;
     }
-
-    @Override
-    public DataType visitFunction_declaration(YoltParser.Function_declarationContext ctx) {
-        currentScope = currentScope.openScope();
-        visitChildren(ctx);
-        currentScope = currentScope.closeScope();
-        return null;
-    }
-
-
 
     @Override
     public DataType visitVarIdentifier(YoltParser.VarIdentifierContext ctx) {
         Symbol s = currentScope.lookupVariable(ctx.IDENTIFIER().toString());
+
         if (s == null)
             throw new YoltCompilerException("Variable has not been initialized yet: " + ctx.IDENTIFIER().toString());
 
@@ -176,6 +235,17 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
     @Override
     public DataType visitBoolIdentifier(YoltParser.BoolIdentifierContext ctx) {
         return addType( ctx, DataType.BOOLEAN);
+    }
+
+    @Override
+    public DataType visitRandomIdentifier(YoltParser.RandomIdentifierContext ctx) {
+        return addType( ctx, DataType.INT);
+    }
+
+    @Override
+    public DataType visitTextIdentifier(YoltParser.TextIdentifierContext ctx) {
+        if (ctx.prompt_input().STRING() != null) return addType( ctx, DataType.STRING);
+        else return addType( ctx, DataType.INT);
     }
 
     @Override
@@ -266,7 +336,19 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
         throw new YoltCompilerException("Random input has to be either INT or COIN");
     }
 
+    @Override
+    public DataType visitBreak_statement(YoltParser.Break_statementContext ctx) {
+        //TODO ADD BREAK STATEMENT CHECKER! SHOULD ONLY BE ABLE TO EXIST WITHIN A LOOP!
+        return null;
+    }
 
+
+
+    private FunctionType addFunctionType(ParseTree node, FunctionType type) //TODO Check.
+    {
+        functionTypes.put(node, type);
+        return type;
+    }
 
     private DataType addType(ParseTree node, DataType type) {
         types.put(node, type);

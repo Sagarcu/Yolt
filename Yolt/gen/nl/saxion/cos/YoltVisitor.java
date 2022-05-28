@@ -16,23 +16,11 @@ public interface YoltVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitApplication(YoltParser.ApplicationContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link YoltParser#class_declaration}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitClass_declaration(YoltParser.Class_declarationContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link YoltParser#function_declaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitFunction_declaration(YoltParser.Function_declarationContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link YoltParser#class_call}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitClass_call(YoltParser.Class_callContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link YoltParser#function_call}.
 	 * @param ctx the parse tree
@@ -143,6 +131,13 @@ public interface YoltVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitParanExpression(YoltParser.ParanExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code FunctionExpression}
+	 * labeled alternative in {@link YoltParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctionExpression(YoltParser.FunctionExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code RandomIdentifier}
 	 * labeled alternative in {@link YoltParser#expr}.

@@ -1,14 +1,14 @@
 grammar Yolt;
 
-application: class_declaration? function_declaration* EOF ;
+application: global_var_declaration* function_declaration* EOF ;
 
 //TODO's:
+//Consider adding class back to this, so you can decide yourself how your class / main class should be :).
 //Cleanup some code.
 
-class_declaration: CLASS IDENTIFIER BRACKET_OPEN (function_declaration | global_var_declaration)+ BRACKET_CLOSE; //Could add declerations* here on both sides to make it possible to have global variables.
-function_declaration: FUNCTION (INT | STRING | BOOLEAN | COINS)? IDENTIFIER PAREN_OPEN (variables (COMMA variables)*)? PAREN_CLOSE BRACKET_OPEN statement+ BRACKET_CLOSE;
-class_call: CLASS; //SOMETHING HERE. //TODO FIX CLASS CALLS
-function_call: IDENTIFIER PAREN_OPEN (IDENTIFIER (COMMA IDENTIFIER)*)? PAREN_CLOSE SEMICOLON;
+function_declaration: FUNCTION (INT | STRING | BOOLEAN | COINS)? IDENTIFIER PAREN_OPEN (variables (COMMA variables)*)? PAREN_CLOSE BRACKET_OPEN (statement+ return_statement? | return_statement) BRACKET_CLOSE;
+
+function_call: IDENTIFIER PAREN_OPEN (expr (COMMA expr)*)? PAREN_CLOSE;
 
 global_var_declaration: GLOBAL STATIC? (INT | STRING | BOOLEAN | COINS) IDENTIFIER EQUALS expr SEMICOLON;
 var_declaration: (INT | STRING | BOOLEAN | COINS) IDENTIFIER EQUALS expr SEMICOLON;
@@ -23,7 +23,7 @@ random_input: RANDOM PAREN_OPEN expr? PAREN_CLOSE;
 if_statement: IF PAREN_OPEN logic_expr PAREN_CLOSE COLON BRACKET_OPEN statement+ BRACKET_CLOSE else_if_statement* else_statement?;
 else_if_statement: ELSE_IF PAREN_OPEN logic_expr PAREN_CLOSE COLON BRACKET_OPEN statement+ BRACKET_CLOSE;
 else_statement: ELSE COLON BRACKET_OPEN statement+ BRACKET_CLOSE;
-return_statement: RETURN PAREN_OPEN IDENTIFIER PAREN_CLOSE SEMICOLON;
+return_statement: RETURN PAREN_OPEN expr PAREN_CLOSE SEMICOLON;
 
 while_loop: LOOP PAREN_OPEN logic_expr PAREN_CLOSE COLON BRACKET_OPEN statement+ break_statement? BRACKET_CLOSE;
 do_while_loop: LOOP COLON BRACKET_OPEN statement+ break_statement? BRACKET_CLOSE WHILE PAREN_OPEN logic_expr PAREN_CLOSE SEMICOLON;
@@ -39,6 +39,7 @@ expr: (PAREN_OPEN expr PAREN_CLOSE)    # ParanExpression
     | left=expr (POW | MOD) right=expr # PowModExpression
     | left=expr (MUL | DIV) right=expr # MulDivExpression
     | left=expr (ADD | SUB) right=expr # AddSubExpression
+    | function_call # FunctionExpression
     | IDENTIFIER # VarIdentifier
     | random_input # RandomIdentifier
     | prompt_input # TextIdentifier
@@ -54,7 +55,7 @@ logic_expr:  logic_expr  LOGIC_AND logic_expr  # LogicAnd
            ;
 
 compare_values: expr (LOGIC_BIGGER | LOGIC_EQUAL | LOGIC_LOWER | LOGIC_UNEQUAL | LOGIC_BIGGER_EQUAL | LOGIC_LOWER_EQUAL) expr;
-statement: function_call | return_statement | if_statement | var_declaration | do_while_loop | while_loop | print_stmt | var_assignment_short | break_statement | var_assignment;
+statement: function_call SEMICOLON | if_statement | var_declaration | do_while_loop | while_loop | print_stmt | var_assignment_short | break_statement | var_assignment;
 
 //Classes and functions.
 CLASS: 'CLASS';

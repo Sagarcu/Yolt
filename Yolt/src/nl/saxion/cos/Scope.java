@@ -6,6 +6,7 @@ import java.util.Map;
 public class Scope {
 
     private Map<String, Symbol> symbols = new HashMap<>();
+
     private Scope parentScope;
 
     public void declareVariable( Symbol symbol ) {

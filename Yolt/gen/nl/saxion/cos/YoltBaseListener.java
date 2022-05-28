@@ -27,18 +27,6 @@ public class YoltBaseListener implements YoltListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterClass_declaration(YoltParser.Class_declarationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitClass_declaration(YoltParser.Class_declarationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterFunction_declaration(YoltParser.Function_declarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -46,18 +34,6 @@ public class YoltBaseListener implements YoltListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitFunction_declaration(YoltParser.Function_declarationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterClass_call(YoltParser.Class_callContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitClass_call(YoltParser.Class_callContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -274,6 +250,18 @@ public class YoltBaseListener implements YoltListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitParanExpression(YoltParser.ParanExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFunctionExpression(YoltParser.FunctionExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFunctionExpression(YoltParser.FunctionExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

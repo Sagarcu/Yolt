@@ -17,16 +17,6 @@ public interface YoltListener extends ParseTreeListener {
 	 */
 	void exitApplication(YoltParser.ApplicationContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link YoltParser#class_declaration}.
-	 * @param ctx the parse tree
-	 */
-	void enterClass_declaration(YoltParser.Class_declarationContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link YoltParser#class_declaration}.
-	 * @param ctx the parse tree
-	 */
-	void exitClass_declaration(YoltParser.Class_declarationContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link YoltParser#function_declaration}.
 	 * @param ctx the parse tree
 	 */
@@ -36,16 +26,6 @@ public interface YoltListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFunction_declaration(YoltParser.Function_declarationContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link YoltParser#class_call}.
-	 * @param ctx the parse tree
-	 */
-	void enterClass_call(YoltParser.Class_callContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link YoltParser#class_call}.
-	 * @param ctx the parse tree
-	 */
-	void exitClass_call(YoltParser.Class_callContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link YoltParser#function_call}.
 	 * @param ctx the parse tree
@@ -230,6 +210,18 @@ public interface YoltListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitParanExpression(YoltParser.ParanExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code FunctionExpression}
+	 * labeled alternative in {@link YoltParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionExpression(YoltParser.FunctionExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code FunctionExpression}
+	 * labeled alternative in {@link YoltParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionExpression(YoltParser.FunctionExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code RandomIdentifier}
 	 * labeled alternative in {@link YoltParser#expr}.

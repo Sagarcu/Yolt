@@ -1,44 +1,19 @@
-CLASS fibonacci
-{
+
     FUNCTION main()
     {
-
-    COINS test3 = 500S_800B;
-    test3 = test3 / 5;
-    SPEAK("YOU OWN: " + test3);
-
-    NUMBER test = 0;
-    NUMBER test2 = 5;
-
-    SPEAK(test);
-        REPEAT(test < 20):
-        {
-        SPEAK(test);
-        IF(test < 5):
-        {
-        SPEAK("HAPPEND!");
-        }
-        ELSE IF(test < 15):
-        {
-        SPEAK("HAPPEND2!");
-            IF(test < 7):
-            {
-            SPEAK("HAPPEND4!");
-            }
-            ELSE IF (test < 10):
-            {
-            SPEAK("HAPPEND5!");
-            }
-            ELSE:
-            {
-            SPEAK("HAPPEND6!");
-            }
-        }
-        ELSE:
-        {
-        SPEAK("HAPPEND3!");
-        }
-        test = test + 1;
-        }
+    NUMBER epic = test(10);
+    SPEAK(epic);
+    test2();
     }
-}
+
+    FUNCTION NUMBER test(NUMBER test)
+    {
+    NUMBER weed = 620;
+    RETURN(weed + 10);
+    }
+
+    FUNCTION test2()
+    {
+    SPEAK("HELLO BITCHES");
+    }
+
