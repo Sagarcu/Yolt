@@ -3,10 +3,6 @@ package nl.saxion.cos;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import java.util.ArrayList;
 
-
-//TODO: Add function support.
-//TODO Add bonus feature? Maybe array support if i have some time left.
-
 @SuppressWarnings("DuplicatedCode")
 public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
     private int loopnr = 0;//required.
@@ -15,12 +11,13 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
     private int elseif = 0; //required for multiple else if loops.
     private int endif = 0; //required.
 
-
     private final ParseTreeProperty<DataType> types;
     private final ParseTreeProperty<Symbol> symbols;
     private final ParseTreeProperty<FunctionType> functionTypes;
     private final ParseTreeProperty<FunctionSymbol> functionSymbols;
 
+    private ArrayList<YoltParser.ExprContext> initExpressions = new ArrayList<>();
+    private final ArrayList<String> initVarCode = new ArrayList<>();
 
     private final ArrayList<String> jasminCode = new ArrayList<>();
 
@@ -63,6 +60,16 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
             jasminCode.add(".limit locals 99");
             jasminCode.add("aload_0");
             jasminCode.add("invokenonvirtual java/lang/Object/<init>()V");
+
+            for(int i = 0; i < initExpressions.size(); i++)
+            {
+                jasminCode.add("aload_0");
+                visit(initExpressions.get(i));
+            }
+
+            for (String s : initVarCode) jasminCode.add(s.toString());
+
+
             jasminCode.add("return");
             jasminCode.add(".end method");
             jasminCode.add("");
@@ -96,7 +103,7 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
             jasminCode.add("new " + className);
             jasminCode.add("dup");
             jasminCode.add("invokenonvirtual " + className + "/<init>()V");
-            jasminCode.add("astore 1");
+            jasminCode.add("astore 0");
             jasminCode.add("");
             //jasminCode.add("new " + className); //TODO MOVE OUTSIDE OF HERE!
             //jasminCode.add("dup");
@@ -117,22 +124,24 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
 
             for(int i = 0; i < fs.getTypes().size(); i++)
             {
-                if (i > 0)
-                {
-                    jasmin.append(", ");
-                }
-
-                if(fs.getTypes().get(i).equals(DataType.INT)) jasmin.append("I");
+                if(fs.getTypes().get(i).equals(DataType.STRING)) jasmin.append("Ljava/lang/String;");
+                else jasmin.append("I");
             }
             jasmin.append(")");
 
-            if (fs.getFunctionType() == FunctionType.STRING || fs.getFunctionType() == FunctionType.VOID) jasmin.append("V");
+            if (fs.getFunctionType() == FunctionType.VOID) jasmin.append("V");
+            else if (fs.getFunctionType() == FunctionType.STRING) jasmin.append("Ljava/lang/String;");
             else jasmin.append("I");
 
             jasminCode.add(jasmin.toString());
             jasminCode.add(".limit stack 99");
             jasminCode.add(".limit locals 99");
             jasminCode.add("");
+
+            for(int i = 0; i < ctx.variables().size(); i++)
+            {
+                visit(ctx.variables(i)); //Visit our parameter variables.
+            }
 
             for(int i = 0; i < ctx.statement().size(); i++)
             {
@@ -162,8 +171,25 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
 
     @Override //TODO TYPECHECK!!!
     public Void visitFunction_call(YoltParser.Function_callContext ctx) {
-        jasminCode.add("aload 1");
-        jasminCode.add("invokevirtual " + className + "/" + ctx.IDENTIFIER() + "()V");
+        FunctionSymbol fs = functionSymbols.get(ctx);
+
+        StringBuilder parameters = new StringBuilder("");
+
+        for(int i = 0; i < fs.getTypes().size(); i++)
+        {
+            if(fs.getTypes().get(i).equals(DataType.STRING)) parameters.append("Ljava/lang/String;");
+            else parameters.append("I");
+        }
+
+        jasminCode.add("aload 0"); //Load class onto stack.
+
+        for(int i = 0; i < ctx.expr().size(); i++)
+        {
+            visit(ctx.expr(i));
+        }
+
+        if(fs.getFunctionType().equals(FunctionType.STRING) || fs.getFunctionType().equals(FunctionType.VOID)) jasminCode.add("invokevirtual " + className + "/" +ctx.IDENTIFIER().toString() +"(" + parameters + ")V");
+        else jasminCode.add("invokevirtual " + className + "/" +ctx.IDENTIFIER().toString() +"(" + parameters + ")I");
         return null;
     }
 
@@ -176,15 +202,19 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
 
         for(int i = 0; i < fs.getTypes().size(); i++)
         {
-            if(fs.getTypes().get(i).equals(DataType.INT)) parameters.append("I");
-            //TODO add the parameters for the function here!
+            if(fs.getTypes().get(i).equals(DataType.STRING)) parameters.append("Ljava/lang/String;");
+            else parameters.append("I");
         }
 
-        jasminCode.add("aload 1"); //Load class onto stack.
+        jasminCode.add("aload 0"); //Load class onto stack.
 
-        visit(ctx.function_call().expr(0)); //TODO update so it looks at all.
+        for(int i = 0; i < ctx.function_call().expr().size(); i++)
+        {
+            visit(ctx.function_call().expr(i));
+        }
 
-        if(fs.getFunctionType().equals(FunctionType.STRING) || fs.getFunctionType().equals(FunctionType.VOID)) jasminCode.add("invokevirtual " + className + "/" +ctx.function_call().IDENTIFIER().toString() +"(" + parameters + ")V");
+        if(fs.getFunctionType().equals(FunctionType.VOID)) jasminCode.add("invokevirtual " + className + "/" +ctx.function_call().IDENTIFIER().toString() +"(" + parameters + ")V");
+        else if (fs.getFunctionType().equals(FunctionType.STRING)) jasminCode.add("invokevirtual " + className + "/" +ctx.function_call().IDENTIFIER().toString() +"(" + parameters + ")Ljava/lang/String;");
         else jasminCode.add("invokevirtual " + className + "/" +ctx.function_call().IDENTIFIER().toString() +"(" + parameters + ")I");
 
 
@@ -204,26 +234,26 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
         Symbol s = symbols.get(ctx);
         if (s.getType() == DataType.STRING)
         {
-            jasminCode.add(".field private " + ctx.IDENTIFIER() + " a");
-        } else if (s.getType() == DataType.BOOLEAN)
+            jasminCode.add(".field private " + ctx.IDENTIFIER().toString() + " a");
+        } else jasminCode.add(".field private " + ctx.IDENTIFIER().toString()  + " I");
+
+        if(ctx.expr() != null) //TODO add all code for creating variables here.
         {
-            jasminCode.add(".field private " + ctx.IDENTIFIER() + " I");
-        } else if (s.getType() == DataType.COINS)
-        {
-            jasminCode.add(".field private " + ctx.IDENTIFIER() + " I");
-        } else if (s.getType() == DataType.INT)
-        {
-            jasminCode.add(".field private " + ctx.IDENTIFIER() + " I");
+            if(s.getType() == DataType.INT)
+            {
+                initExpressions.add(ctx.expr());
+                initVarCode.add("putfield " + className + "/" + ctx.IDENTIFIER().toString()  + " I");
+            }
+
+
         }
 
-        //here perhaps say ldc and then assign value to it?
+
+
+        //TODO find out how to do the initializing of these values!
 
         return null;
     }
-
-
-
-
 
     @Override
     public Void visitIf_statement(YoltParser.If_statementContext ctx) {
@@ -422,21 +452,21 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
     @Override
     public Void visitVar_assignment(YoltParser.Var_assignmentContext ctx) {
 
-        visit(ctx.expr());
         Symbol s = symbols.get(ctx);
 
-        if (s.getType() == DataType.INT)
+        if(s.isGlobal())
         {
-            jasminCode.add("istore " + s.getLocalSlot()); //Store it in that variable.
-        } else if (s.getType() == DataType.COINS)
+            jasminCode.add("aload_0");
+
+            visit(ctx.expr());
+
+            if (s.getType() == DataType.STRING) jasminCode.add("putfield " + className + "/" + ctx.IDENTIFIER() + " A");
+            else  jasminCode.add("putfield " + className + "/" + ctx.IDENTIFIER() + " I");
+        } else
         {
-            jasminCode.add("istore " + s.getLocalSlot());
-        } else if (s.getType() == DataType.BOOLEAN)
-        {
-            jasminCode.add("istore " + s.getLocalSlot());
-        } else if (s.getType() == DataType.STRING)
-        {
-            jasminCode.add("astore " + s.getLocalSlot());
+            visit(ctx.expr());
+            if (s.getType() == DataType.STRING) jasminCode.add("astore " + s.getLocalSlot());
+            else  jasminCode.add("istore " + s.getLocalSlot());
         }
         return null;
     }
@@ -623,16 +653,22 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
     public Void visitVarIdentifier(YoltParser.VarIdentifierContext ctx) {
         Symbol s = symbols.get(ctx);
 
-        if( s.getType() == DataType.INT )
-            jasminCode.add("iload " + s.getLocalSlot());
-        else if (s.getType() == DataType.STRING)
-            jasminCode.add("aload " + s.getLocalSlot());
-        else if (s.getType() == DataType.BOOLEAN)
+        if(s.isGlobal())
         {
-            jasminCode.add("iload " + s.getLocalSlot());
-        } else if (s.getType() == DataType.COINS)
+            jasminCode.add("aload_0"); //TODO change with 1 or aload 1 if it not worky!
+            if( s.getType() == DataType.STRING )
+                jasminCode.add("getfield " + className + "/" + s.getName() +" A");
+            else {
+                jasminCode.add("getfield " + className + "/" + s.getName() +" I");
+            }
+            //Put stuff here if it is global.
+        } else
         {
-            jasminCode.add("iload " + s.getLocalSlot());
+            if( s.getType() == DataType.STRING )
+                jasminCode.add("aload " + s.getLocalSlot());
+            else {
+                jasminCode.add("iload " + s.getLocalSlot());
+            }
         }
         return null;
     }
@@ -713,12 +749,12 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
     }
 
     private void generateCoinsJasmin(){
-        jasminCode.add("istore 0");
+        jasminCode.add("istore 98"); //TODO FIND BETTER PLACE TO STORE THIS NUMBER!
          // requires the value to already be on the stack.
         jasminCode.add("new java/lang/StringBuilder");
         jasminCode.add("dup");
         jasminCode.add("invokespecial java/lang/StringBuilder/<init>()V");
-        jasminCode.add("iload 0");
+        jasminCode.add("iload 98");
         jasminCode.add("ldc 2898");
         jasminCode.add("idiv"); //The value of the gold.
         jasminCode.add("invokevirtual java/lang/StringBuilder/append(I)Ljava/lang/StringBuilder;");
@@ -726,7 +762,7 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
         jasminCode.add("invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;");
 
 
-        jasminCode.add("iload 0");
+        jasminCode.add("iload 98");
         jasminCode.add("ldc 2898");
         jasminCode.add("irem");
         jasminCode.add("ldc 69");
@@ -735,13 +771,15 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
         jasminCode.add("ldc \"S_\"");
         jasminCode.add("invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;");
 
-        jasminCode.add("iload 0");
+        jasminCode.add("iload 98");
         jasminCode.add("ldc 69");
         jasminCode.add("irem"); //Bronze.
         jasminCode.add("invokevirtual java/lang/StringBuilder/append(I)Ljava/lang/StringBuilder;");
         jasminCode.add("ldc \"B\"");
         jasminCode.add("invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;");
         jasminCode.add("invokevirtual java/lang/StringBuilder/toString()Ljava/lang/String;");
+        jasminCode.add("ldc 0");
+        jasminCode.add("istore 98");
     }
 
     private void generateBooleanJasmin() //The boolean value should already be on the stack!

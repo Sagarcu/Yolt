@@ -107,6 +107,7 @@ public class Compiler {
 			YoltFunctionChecker functionChecker = new YoltFunctionChecker();
 			functionChecker.visit(parseTree);
 			functions = functionChecker.getFunctionSymbols(); //Get all our functions that are declared!
+
 			YoltCodeChecker checker = new YoltCodeChecker(types, functionType, symbols, functionSymbols, functions, parser);
 			checker.visit(parseTree);
 			return true;

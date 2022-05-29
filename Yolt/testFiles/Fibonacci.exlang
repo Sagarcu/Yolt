@@ -1,19 +1,10 @@
 
+
+GLOBAL NUMBER epic = 50;
+
     FUNCTION main()
     {
-    NUMBER epic = test(10);
+    epic = epic + 10;
     SPEAK(epic);
-    test2();
-    }
-
-    FUNCTION NUMBER test(NUMBER test)
-    {
-    NUMBER weed = 620;
-    RETURN(weed + 10);
-    }
-
-    FUNCTION test2()
-    {
-    SPEAK("HELLO BITCHES");
     }
 

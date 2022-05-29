@@ -20,7 +20,8 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
 
 
     private Scope currentScope;
-    private int numLocals = 1; //Start at 2 because i'm using 0 and 1!
+    private int numLocals = 2; //0 is used for the class. 1 is used for methods. 2 is used for gold calculation.
+
     //TODO LOOK IF THERE ARE ANY MORE THINGS WE WANT TO CHECK?!
     //TODO Consider adding infinite loop checker?
     public YoltCodeChecker(ParseTreeProperty<DataType> types, ParseTreeProperty<FunctionType> functionType, ParseTreeProperty<Symbol> symbols, ParseTreeProperty<FunctionSymbol> functionSymbols, Map<String, FunctionSymbol> functions, YoltParser parser) {
@@ -52,30 +53,61 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
         if( s != null )
             throw new YoltCompilerException("The variable " + varName + " has already been initialized.");
 
-        numLocals++;
-        currentScope.declareVariable(new Symbol(varName, type, numLocals));
 
-        DataType expressionType = visit(ctx.expr());
+        int numLocal = currentScope.getNumLocals();
+        currentScope.declareVariable(new Symbol(varName, type, false, numLocal));
+
+        DataType expressionType = visit(ctx.expr()); //TODO Turn on again!
         //if( type != expressionType )
         //    throw new YoltCompilerException("Trying to assign a " + expressionType + " to a " + type + ".");
 
-        symbols.put(ctx, new Symbol(varName, type, numLocals));
+        symbols.put(ctx, new Symbol(varName, type, false, numLocal));
+        return null;
+    }
+
+    @Override
+    public DataType visitFunction_call(YoltParser.Function_callContext ctx) {
+        String functionName = ctx.IDENTIFIER().toString();
+
+        FunctionSymbol currentFunction = functions.get(functionName);
+        if(currentFunction == null)
+        {
+            throw new YoltCompilerException("No function named " + functionName + " found!");
+        }
+
+        functionSymbols.put(ctx, currentFunction);
         return null;
     }
 
     @Override
     public DataType visitFunction_declaration(YoltParser.Function_declarationContext ctx) {
         currentScope = currentScope.openScope();
-        visitChildren(ctx);
 
         String functionName = ctx.IDENTIFIER().toString();
         FunctionSymbol currentFunction = functions.get(functionName);
         functionSymbols.put(ctx, currentFunction);
 
+        visitChildren(ctx);
+
         currentScope = currentScope.closeScope();
         return null;
     }
 
+    @Override
+    public DataType visitVariables(YoltParser.VariablesContext ctx) {
+        DataType type;
+        if (ctx.STRING() != null) type = DataType.STRING;
+        else if (ctx.COINS() != null) type = DataType.COINS;
+        else if (ctx.BOOLEAN() != null) type = DataType.BOOLEAN;
+        else type = DataType.INT;
+
+        int localNum = currentScope.getNumLocals();
+
+        currentScope.declareVariable(new Symbol(ctx.IDENTIFIER().toString(), type, false, localNum));
+        symbols.put(ctx, new Symbol(ctx.IDENTIFIER().toString(), type, false, localNum));
+
+        return null;
+    }
 
     @Override
     public DataType visitFunctionExpression(YoltParser.FunctionExpressionContext ctx) {
@@ -97,14 +129,9 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
             //if(currentFunction.getTypes().get(i) != ctx.function_call().expr(i))
         }
 
-        for(DataType dataType: currentFunction.getTypes())
-        {
-
-        }
 
         //Check for missing variables.
         //Find out what kind of value it is expecting back! We have to do this by saving our functions and then finding the name and then reading the type to get the correct type.
-        System.out.println(ctx.function_call().IDENTIFIER().toString());
 
         //return super.visitFunctionExpression(ctx);
         return null;
@@ -125,14 +152,16 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
         if( s != null )
             throw new YoltCompilerException("The variable " + varName + " has already been initialized.");
 
-        numLocals++;
-        currentScope.declareVariable(new Symbol(varName, type, numLocals));
 
-        DataType expressionType = visit(ctx.expr());
-        if( type != expressionType )
-            throw new YoltCompilerException("Trying to assign a " + expressionType + " to a " + type + ".");
+        currentScope.declareVariable(new Symbol(varName, type, true, -1)); //Global variable doesn't need a numLocal.
 
-        symbols.put(ctx, new Symbol(varName, type, numLocals));
+        if (ctx.expr() != null)
+        {
+            DataType expressionType = visit(ctx.expr());
+            if( type != expressionType )
+                throw new YoltCompilerException("Trying to assign a " + expressionType + " to a " + type + ".");
+        }
+        symbols.put(ctx, new Symbol(varName, type, true, -1)); //TODO make neater later if it works.
 
         return null;
     }

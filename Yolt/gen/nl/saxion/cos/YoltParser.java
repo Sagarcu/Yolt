@@ -459,16 +459,15 @@ public class YoltParser extends Parser {
 	public static class Global_var_declarationContext extends ParserRuleContext {
 		public TerminalNode GLOBAL() { return getToken(YoltParser.GLOBAL, 0); }
 		public TerminalNode IDENTIFIER() { return getToken(YoltParser.IDENTIFIER, 0); }
-		public TerminalNode EQUALS() { return getToken(YoltParser.EQUALS, 0); }
-		public ExprContext expr() {
-			return getRuleContext(ExprContext.class,0);
-		}
-		public TerminalNode SEMICOLON() { return getToken(YoltParser.SEMICOLON, 0); }
 		public TerminalNode INT() { return getToken(YoltParser.INT, 0); }
 		public TerminalNode STRING() { return getToken(YoltParser.STRING, 0); }
 		public TerminalNode BOOLEAN() { return getToken(YoltParser.BOOLEAN, 0); }
 		public TerminalNode COINS() { return getToken(YoltParser.COINS, 0); }
-		public TerminalNode STATIC() { return getToken(YoltParser.STATIC, 0); }
+		public TerminalNode SEMICOLON() { return getToken(YoltParser.SEMICOLON, 0); }
+		public TerminalNode EQUALS() { return getToken(YoltParser.EQUALS, 0); }
+		public ExprContext expr() {
+			return getRuleContext(ExprContext.class,0);
+		}
 		public Global_var_declarationContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -497,17 +496,7 @@ public class YoltParser extends Parser {
 			{
 			setState(103);
 			match(GLOBAL);
-			setState(105);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==STATIC) {
-				{
-				setState(104);
-				match(STATIC);
-				}
-			}
-
-			setState(107);
+			setState(104);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << INT) | (1L << BOOLEAN) | (1L << STRING) | (1L << COINS))) != 0)) ) {
 			_errHandler.recoverInline(this);
@@ -517,14 +506,30 @@ public class YoltParser extends Parser {
 				_errHandler.reportMatch(this);
 				consume();
 			}
-			setState(108);
+			setState(105);
 			match(IDENTIFIER);
-			setState(109);
-			match(EQUALS);
-			setState(110);
-			expr(0);
 			setState(111);
-			match(SEMICOLON);
+			_errHandler.sync(this);
+			switch (_input.LA(1)) {
+			case SEMICOLON:
+				{
+				setState(106);
+				match(SEMICOLON);
+				}
+				break;
+			case EQUALS:
+				{
+				setState(107);
+				match(EQUALS);
+				setState(108);
+				expr(0);
+				setState(109);
+				match(SEMICOLON);
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -2409,8 +2414,8 @@ public class YoltParser extends Parser {
 		"\u0001\u0001\u0003\u0001V\b\u0001\u0001\u0001\u0001\u0001\u0001\u0002"+
 		"\u0001\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0005\u0002_\b\u0002"+
 		"\n\u0002\f\u0002b\t\u0002\u0003\u0002d\b\u0002\u0001\u0002\u0001\u0002"+
-		"\u0001\u0003\u0001\u0003\u0003\u0003j\b\u0003\u0001\u0003\u0001\u0003"+
-		"\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0004\u0001\u0004"+
+		"\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0003"+
+		"\u0001\u0003\u0001\u0003\u0003\u0003p\b\u0003\u0001\u0004\u0001\u0004"+
 		"\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0005\u0001\u0005"+
 		"\u0001\u0005\u0001\u0005\u0001\u0005\u0001\u0006\u0001\u0006\u0001\u0006"+
 		"\u0001\u0006\u0001\u0006\u0001\u0006\u0001\u0007\u0001\u0007\u0001\u0007"+
@@ -2477,10 +2482,10 @@ public class YoltParser extends Parser {
 		"\u0000\u0000`a\u0001\u0000\u0000\u0000ad\u0001\u0000\u0000\u0000b`\u0001"+
 		"\u0000\u0000\u0000c[\u0001\u0000\u0000\u0000cd\u0001\u0000\u0000\u0000"+
 		"de\u0001\u0000\u0000\u0000ef\u0005.\u0000\u0000f\u0005\u0001\u0000\u0000"+
-		"\u0000gi\u0005\u0002\u0000\u0000hj\u0005\u0003\u0000\u0000ih\u0001\u0000"+
-		"\u0000\u0000ij\u0001\u0000\u0000\u0000jk\u0001\u0000\u0000\u0000kl\u0007"+
-		"\u0000\u0000\u0000lm\u0005\u001a\u0000\u0000mn\u0005)\u0000\u0000no\u0003"+
-		"$\u0012\u0000op\u0005+\u0000\u0000p\u0007\u0001\u0000\u0000\u0000qr\u0007"+
+		"\u0000gh\u0005\u0002\u0000\u0000hi\u0007\u0000\u0000\u0000io\u0005\u001a"+
+		"\u0000\u0000jp\u0005+\u0000\u0000kl\u0005)\u0000\u0000lm\u0003$\u0012"+
+		"\u0000mn\u0005+\u0000\u0000np\u0001\u0000\u0000\u0000oj\u0001\u0000\u0000"+
+		"\u0000ok\u0001\u0000\u0000\u0000p\u0007\u0001\u0000\u0000\u0000qr\u0007"+
 		"\u0000\u0000\u0000rs\u0005\u001a\u0000\u0000st\u0005)\u0000\u0000tu\u0003"+
 		"$\u0012\u0000uv\u0005+\u0000\u0000v\t\u0001\u0000\u0000\u0000wx\u0005"+
 		"\u001a\u0000\u0000xy\u0005)\u0000\u0000yz\u0003$\u0012\u0000z{\u0005+"+
@@ -2580,7 +2585,7 @@ public class YoltParser extends Parser {
 		"\u0128\u0122\u0001\u0000\u0000\u0000\u0128\u0123\u0001\u0000\u0000\u0000"+
 		"\u0128\u0124\u0001\u0000\u0000\u0000\u0128\u0125\u0001\u0000\u0000\u0000"+
 		"\u0128\u0126\u0001\u0000\u0000\u0000\u0128\u0127\u0001\u0000\u0000\u0000"+
-		"\u0129+\u0001\u0000\u0000\u0000\u001b/5<EHORU`ci\u008a\u0097\u009d\u00a1"+
+		"\u0129+\u0001\u0000\u0000\u0000\u001b/5<EHORU`co\u008a\u0097\u009d\u00a1"+
 		"\u00ac\u00b6\u00c9\u00cc\u00d6\u00d9\u00fb\u0106\u0108\u0114\u0116\u0128";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
