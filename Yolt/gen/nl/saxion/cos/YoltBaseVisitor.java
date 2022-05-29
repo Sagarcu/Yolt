@@ -212,7 +212,7 @@ public class YoltBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements Y
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitTextIdentifier(YoltParser.TextIdentifierContext ctx) { return visitChildren(ctx); }
+	@Override public T visitPromptIdentifier(YoltParser.PromptIdentifierContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

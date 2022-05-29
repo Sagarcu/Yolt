@@ -1763,22 +1763,22 @@ public class YoltParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class TextIdentifierContext extends ExprContext {
+	public static class PromptIdentifierContext extends ExprContext {
 		public Prompt_inputContext prompt_input() {
 			return getRuleContext(Prompt_inputContext.class,0);
 		}
-		public TextIdentifierContext(ExprContext ctx) { copyFrom(ctx); }
+		public PromptIdentifierContext(ExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof YoltListener ) ((YoltListener)listener).enterTextIdentifier(this);
+			if ( listener instanceof YoltListener ) ((YoltListener)listener).enterPromptIdentifier(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof YoltListener ) ((YoltListener)listener).exitTextIdentifier(this);
+			if ( listener instanceof YoltListener ) ((YoltListener)listener).exitPromptIdentifier(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof YoltVisitor ) return ((YoltVisitor<? extends T>)visitor).visitTextIdentifier(this);
+			if ( visitor instanceof YoltVisitor ) return ((YoltVisitor<? extends T>)visitor).visitPromptIdentifier(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1873,7 +1873,7 @@ public class YoltParser extends Parser {
 				break;
 			case 5:
 				{
-				_localctx = new TextIdentifierContext(_localctx);
+				_localctx = new PromptIdentifierContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 				setState(246);

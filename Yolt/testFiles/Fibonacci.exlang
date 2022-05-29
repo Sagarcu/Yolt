@@ -2,9 +2,31 @@
 
 GLOBAL NUMBER epic = 50;
 
+    FUNCTION fibonacci()
+    {
+    epic = epic + 5;
+    }
+
     FUNCTION main()
     {
-    epic = epic + 10;
+    NUMBER test = 10;
+
+    NUMBER hello = TELL(WORDS);
+    REPEAT(epic < 10):
+    {
+    epic += 1;
+    IF(epic > 7):
+    {
+    STOP;
+    }
+    }
+    test(epic);
     SPEAK(epic);
     }
 
+
+    FUNCTION test(NUMBER i)
+    {
+    NUMBER test = i + 10;
+    SPEAK(test);
+    }

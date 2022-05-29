@@ -307,17 +307,17 @@ public interface YoltListener extends ParseTreeListener {
 	 */
 	void exitCoinIdentifier(YoltParser.CoinIdentifierContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code TextIdentifier}
+	 * Enter a parse tree produced by the {@code PromptIdentifier}
 	 * labeled alternative in {@link YoltParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void enterTextIdentifier(YoltParser.TextIdentifierContext ctx);
+	void enterPromptIdentifier(YoltParser.PromptIdentifierContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code TextIdentifier}
+	 * Exit a parse tree produced by the {@code PromptIdentifier}
 	 * labeled alternative in {@link YoltParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void exitTextIdentifier(YoltParser.TextIdentifierContext ctx);
+	void exitPromptIdentifier(YoltParser.PromptIdentifierContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code MulDivExpression}
 	 * labeled alternative in {@link YoltParser#expr}.

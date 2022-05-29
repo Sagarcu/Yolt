@@ -17,12 +17,14 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
     private final ParseTreeProperty<FunctionSymbol> functionSymbols;
 
     private ArrayList<YoltParser.ExprContext> initExpressions = new ArrayList<>();
-    private final ArrayList<String> initVarCode = new ArrayList<>();
 
+    private final ArrayList<String> initVarCode = new ArrayList<>();
     private final ArrayList<String> jasminCode = new ArrayList<>();
 
     private final String className; //Name of our class.
     private Boolean createdInit = false;
+
+    //TODO Fix
 
     public YoltCodeGenerator(
                           ParseTreeProperty<DataType> types,
@@ -53,7 +55,7 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
             visit(ctx.function_declaration(i)); //Visit all our functions
         }
 
-        if (!createdInit) //TODO CONSIDER MOVING LATER TO ABOVE ALL FUNCTIONS? BUT NEED INFO FROM CODECHECKER THEN!
+        if (!createdInit)
         { //Creates a standard initialize.
             jasminCode.add(".method public <init>()V");
             jasminCode.add(".limit stack 99");
@@ -65,10 +67,8 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
             {
                 jasminCode.add("aload_0");
                 visit(initExpressions.get(i));
+                jasminCode.add(initVarCode.get(i));
             }
-
-            for (String s : initVarCode) jasminCode.add(s.toString());
-
 
             jasminCode.add("return");
             jasminCode.add(".end method");
@@ -88,6 +88,13 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
             jasminCode.add("aload_0");
             jasminCode.add("invokenonvirtual java/lang/Object/<init>()V");
 
+            for(int i = 0; i < initExpressions.size(); i++)
+            {
+                jasminCode.add("aload_0");
+                visit(initExpressions.get(i));
+                jasminCode.add(initVarCode.get(i));
+            }
+
             for(int i = 0; i < ctx.statement().size(); i++) //Anything we want to do within the initializer.
             {
                 visit(ctx.statement(i)); //visit all our statements inside initialize.
@@ -105,9 +112,6 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
             jasminCode.add("invokenonvirtual " + className + "/<init>()V");
             jasminCode.add("astore 0");
             jasminCode.add("");
-            //jasminCode.add("new " + className); //TODO MOVE OUTSIDE OF HERE!
-            //jasminCode.add("dup");
-            //jasminCode.add("invokenonvirtual " + className + "/<init>()V");
 
             for(int i = 0; i < ctx.statement().size(); i++)
             {
@@ -471,16 +475,21 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
         return null;
     }
 
-
-    //TODO Fix short_assignments!
     @Override
     public Void visitVar_assignment_short(YoltParser.Var_assignment_shortContext ctx) {
-
         Symbol s = symbols.get(ctx);
 
         if (s.getType() == DataType.INT || s.getType() == DataType.COINS)
         {
-            jasminCode.add("iload " + s.getLocalSlot());
+            if(s.isGlobal())
+            {
+                jasminCode.add("aload_0"); //Needs double for being able to save it back to the value!
+                jasminCode.add("aload_0");
+                jasminCode.add("getfield " + className + "/" + s.getName() +" I");
+            }
+            else jasminCode.add("iload " + s.getLocalSlot());
+
+
             visit(ctx.expr());
 
             if (ctx.ADD() != null) jasminCode.add("iadd");
@@ -489,53 +498,16 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
             else if (ctx.MUL() != null) jasminCode.add("imul");
             else if (ctx.POW() != null) jasminCode.add("iadd"); //TODO UPDATE TO POWER.
             else if (ctx.MOD() != null) jasminCode.add("irem");
-            jasminCode.add("istore " + s.getLocalSlot());
-        } else if (s.getType() == DataType.STRING)
-        {
-            if (ctx.ADD() != null)
-            {
-                //TODO stuff for addition of Strings.
-            }
-        }
 
+            if(s.isGlobal()) jasminCode.add("putfield " + className + "/" + ctx.IDENTIFIER() + " I");
+            else jasminCode.add("istore " + s.getLocalSlot());
+        }
         return null;
     }
 
 
-    @Override
-    public Void visitRandom_input(YoltParser.Random_inputContext ctx) {
-        jasminCode.add("new java/util/Random");
-        jasminCode.add("dup");
-        jasminCode.add("invokenonvirtual java/util/Random/<init>()V");
 
-        if (ctx.expr() != null) {
-            visit(ctx.expr());
-            jasminCode.add("invokevirtual java/util/Random/nextInt(I)I");
-        } else
-        {
-            jasminCode.add("invokevirtual java/util/Random/nextInt()I");
-        }
 
-        return null;
-    }
-
-    @Override
-    public Void visitPrompt_input(YoltParser.Prompt_inputContext ctx) {
-        jasminCode.add("new java/util/Scanner");
-        jasminCode.add("dup");
-        jasminCode.add("getstatic java/lang/System/in Ljava/io/InputStream;");
-        jasminCode.add("invokenonvirtual java/util/Scanner/<init>(Ljava/io/InputStream;)V");
-
-        if (ctx.INT() != null)
-        {
-            jasminCode.add("invokevirtual java/util/Scanner/nextInt()I");
-        } else
-        {
-            jasminCode.add("invokevirtual java/util/Scanner/nextLine()Ljava/lang/String;");
-        }
-
-        return null;
-    }
 
     @Override
     public Void visitBreak_statement(YoltParser.Break_statementContext ctx) {
@@ -570,10 +542,10 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
 
         //else throw new YoltCompilerException("Unknown type in print");
 
-
-
         return null;
     }
+
+    //Math expressions!
 
     @Override
     public Void visitParanExpression(YoltParser.ParanExpressionContext ctx) {
@@ -645,9 +617,17 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
         visit(ctx.left);
         visit(ctx.right);
         if (ctx.MOD() != null) jasminCode.add("irem");
+        else if (ctx.POW() != null)
+        {
+            //TODO POW LOGIC!
+        }
+
         //TODO Add power by here as well, will need to be done in a "special" way since there is no easy bytecode for that. So will be 6*6*6*6*6 probably.
         return null;
     }
+
+
+    //Identifiers!
 
     @Override
     public Void visitVarIdentifier(YoltParser.VarIdentifierContext ctx) {
@@ -655,7 +635,7 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
 
         if(s.isGlobal())
         {
-            jasminCode.add("aload_0"); //TODO change with 1 or aload 1 if it not worky!
+            jasminCode.add("aload_0");
             if( s.getType() == DataType.STRING )
                 jasminCode.add("getfield " + className + "/" + s.getName() +" A");
             else {
@@ -676,12 +656,6 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
     @Override
     public Void visitIntIdentifier(YoltParser.IntIdentifierContext ctx) {
         jasminCode.add("ldc " + ctx.INT_VALUE().toString());
-        return null;
-    }
-
-    @Override
-    public Void visitStringIdentifier(YoltParser.StringIdentifierContext ctx) {
-        jasminCode.add("ldc " + ctx.STRING_VALUE().toString());
         return null;
     }
 
@@ -719,29 +693,58 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
     }
 
     @Override
-    public Void visitTextIdentifier(YoltParser.TextIdentifierContext ctx) {
-        visit(ctx.prompt_input());
+    public Void visitStringIdentifier(YoltParser.StringIdentifierContext ctx) {
+        jasminCode.add("ldc " + ctx.STRING_VALUE().toString());
         return null;
     }
 
-    /*
     @Override
-    public Void visitRandomIdentifier(YoltParser.RandomIdentifierContext ctx) {
-        visit(ctx.random_input());
+    public Void visitPrompt_input(YoltParser.Prompt_inputContext ctx) {
+        jasminCode.add("new java/util/Scanner");
+        jasminCode.add("dup");
+        jasminCode.add("getstatic java/lang/System/in Ljava/io/InputStream;");
+        jasminCode.add("invokenonvirtual java/util/Scanner/<init>(Ljava/io/InputStream;)V");
+
+        if (ctx.INT() != null)
+        {
+            jasminCode.add("invokevirtual java/util/Scanner/nextInt()I");
+        } else
+        {
+            jasminCode.add("invokevirtual java/util/Scanner/nextLine()Ljava/lang/String;");
+        }
+
         return null;
-    } */ //Uncomment if shit with the random is suddenly broken!.
+    }
+
+    @Override
+    public Void visitRandom_input(YoltParser.Random_inputContext ctx) {
+        jasminCode.add("new java/util/Random");
+        jasminCode.add("dup");
+        jasminCode.add("invokenonvirtual java/util/Random/<init>()V");
+
+        if (ctx.expr() != null) {
+            visit(ctx.expr());
+            jasminCode.add("invokevirtual java/util/Random/nextInt(I)I");
+        } else
+        {
+            jasminCode.add("invokevirtual java/util/Random/nextInt()I");
+        }
+
+        return null;
+    }
+
+    //TODO uncomment if something broken with prompt.
+    /*@Override
+    public Void visitPromptIdentifier(YoltParser.PromptIdentifierContext ctx) {
+        visit(ctx.prompt_input());
+        return null;
+    }*/
 
 
     @Override
     public Void visitReturn_statement(YoltParser.Return_statementContext ctx) {
-        visit(ctx.expr()); //This gets our return value on the stack.
+        visit(ctx.expr()); //This puts our return value on the stack.
         return null;
-    }
-
-    @Override
-    public Void visitStatement(YoltParser.StatementContext ctx) {
-        //jasminCode.add(""); //Sometimes makes the jasmin a bit easier to decipher.
-        return super.visitStatement(ctx);
     }
 
     public ArrayList<String> getJasminCode() {
@@ -760,7 +763,6 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
         jasminCode.add("invokevirtual java/lang/StringBuilder/append(I)Ljava/lang/StringBuilder;");
         jasminCode.add("ldc \"G_\"");
         jasminCode.add("invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;");
-
 
         jasminCode.add("iload 98");
         jasminCode.add("ldc 2898");

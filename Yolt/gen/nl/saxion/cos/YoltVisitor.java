@@ -188,12 +188,12 @@ public interface YoltVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCoinIdentifier(YoltParser.CoinIdentifierContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code TextIdentifier}
+	 * Visit a parse tree produced by the {@code PromptIdentifier}
 	 * labeled alternative in {@link YoltParser#expr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitTextIdentifier(YoltParser.TextIdentifierContext ctx);
+	T visitPromptIdentifier(YoltParser.PromptIdentifierContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code MulDivExpression}
 	 * labeled alternative in {@link YoltParser#expr}.

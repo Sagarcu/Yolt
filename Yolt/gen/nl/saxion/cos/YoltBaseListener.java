@@ -351,13 +351,13 @@ public class YoltBaseListener implements YoltListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterTextIdentifier(YoltParser.TextIdentifierContext ctx) { }
+	@Override public void enterPromptIdentifier(YoltParser.PromptIdentifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitTextIdentifier(YoltParser.TextIdentifierContext ctx) { }
+	@Override public void exitPromptIdentifier(YoltParser.PromptIdentifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

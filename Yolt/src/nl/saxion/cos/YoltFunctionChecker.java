@@ -1,5 +1,7 @@
 package nl.saxion.cos;
 
+import org.antlr.v4.runtime.RuleContext;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +31,7 @@ public class YoltFunctionChecker extends YoltBaseVisitor<DataType> {
 
         for(int i = 0; i < ctx.variables().size(); i++)
         {
-            if(ctx.variables(i).STRING() != null) dataTypes.add(DataType.STRING); //TODO visit the expression itself to find if it is an String!
+            if(ctx.variables(i).STRING() != null) dataTypes.add(DataType.STRING);
             else if (ctx.variables(i).INT() != null) dataTypes.add(DataType.INT);
             else if (ctx.variables(i).BOOLEAN() != null) dataTypes.add(DataType.BOOLEAN);
             else if (ctx.variables(i).COINS() != null) dataTypes.add(DataType.COINS);
@@ -55,7 +57,14 @@ public class YoltFunctionChecker extends YoltBaseVisitor<DataType> {
             }
         }
 
-        return null;
+        for(int i = 0; i < ctx.statement().size(); i++)
+        {
+            if (ctx.statement().get(i).break_statement() != null)
+            {
+                throw new YoltCompilerException("Break statement found outside of a loop!");
+            }
+        }
+        return super.visitFunction_declaration(ctx);
     }
 
     public Map<String, FunctionSymbol> getFunctionSymbols()

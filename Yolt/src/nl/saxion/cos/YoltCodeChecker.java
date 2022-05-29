@@ -1,5 +1,6 @@
 package nl.saxion.cos;
 
+import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
@@ -74,6 +75,12 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
         {
             throw new YoltCompilerException("No function named " + functionName + " found!");
         }
+        for(int i = 0; i < ctx.expr().size(); i++)
+        {
+            visit(ctx.expr(i));
+        }
+
+
 
         functionSymbols.put(ctx, currentFunction);
         return null;
@@ -189,6 +196,11 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
         if( s == null )
             throw new YoltCompilerException("Undefined variable in assignment: " + varName);
 
+        if(s.getType().equals(DataType.STRING))
+        {
+            throw new YoltCompilerException("Can't do short expressions on STRING objects.");
+        }
+
         DataType expressionType = visit(ctx.expr());
         if( s.getType() != expressionType )
             throw new YoltCompilerException("Assignment type is not correct");
@@ -257,24 +269,8 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
     }
 
     @Override
-    public DataType visitStringIdentifier(YoltParser.StringIdentifierContext ctx) {
-        return addType( ctx, DataType.STRING );
-    }
-
-    @Override
     public DataType visitBoolIdentifier(YoltParser.BoolIdentifierContext ctx) {
         return addType( ctx, DataType.BOOLEAN);
-    }
-
-    @Override
-    public DataType visitRandomIdentifier(YoltParser.RandomIdentifierContext ctx) {
-        return addType( ctx, DataType.INT);
-    }
-
-    @Override
-    public DataType visitTextIdentifier(YoltParser.TextIdentifierContext ctx) {
-        if (ctx.prompt_input().STRING() != null) return addType( ctx, DataType.STRING);
-        else return addType( ctx, DataType.INT);
     }
 
     @Override
@@ -283,29 +279,15 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
     }
 
     @Override
+    public DataType visitStringIdentifier(YoltParser.StringIdentifierContext ctx) {
+        return addType( ctx, DataType.STRING );
+    }
+
+
+    @Override
     public DataType visitParanExpression(YoltParser.ParanExpressionContext ctx) {
         DataType subtype = visit(ctx.expr());
         return addType( ctx, subtype );
-    }
-
-    @Override
-    public DataType visitAddSubExpression(YoltParser.AddSubExpressionContext ctx) {
-        DataType leftType = visit(ctx.left);
-        DataType rightType = visit(ctx.right);
-
-        if (leftType == DataType.STRING || rightType == DataType.STRING)
-        {
-            if (ctx.SUB() != null)
-            {
-                throw new YoltCompilerException("Can't do SUB String expressions.");
-            }
-            return addType(ctx, DataType.STRING); //We always return a string if we try to add them together!
-        } else if (!(leftType == DataType.COINS || leftType == DataType.INT) && !(rightType == DataType.INT || rightType == DataType.COINS))
-        {
-            throw new YoltCompilerException("Can't do mathematical expressions on mismatched types [" + leftType + "] and [" + rightType + "].");
-        }
-
-        return addType(ctx, leftType);
     }
 
     @Override
@@ -327,7 +309,7 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
         }
 
         return addType(ctx, leftType);
-    }
+    } //TODO Create CodeGen stuff for POW.
 
     @Override
     public DataType visitMulDivExpression(YoltParser.MulDivExpressionContext ctx) {
@@ -350,30 +332,74 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
     }
 
     @Override
-    public DataType visitPrompt_input(YoltParser.Prompt_inputContext ctx) {
+    public DataType visitAddSubExpression(YoltParser.AddSubExpressionContext ctx) {
+        DataType leftType = visit(ctx.left);
+        DataType rightType = visit(ctx.right);
+
+        if (leftType == DataType.STRING || rightType == DataType.STRING)
+        {
+            if (ctx.SUB() != null)
+            {
+                throw new YoltCompilerException("Can't do SUB String expressions.");
+            }
+            return addType(ctx, DataType.STRING); //We always return a string if we try to add them together!
+        } else if (!(leftType == DataType.COINS || leftType == DataType.INT) && !(rightType == DataType.INT || rightType == DataType.COINS))
+        {
+            throw new YoltCompilerException("Can't do mathematical expressions on mismatched types [" + leftType + "] and [" + rightType + "].");
+        }
+
+        return addType(ctx, leftType);
+    }
+
+
+    @Override
+    public DataType visitPrompt_input(YoltParser.Prompt_inputContext ctx) { //TODO check why it does work with number but not with int.
         if (ctx.INT() != null) return addType( ctx, DataType.INT);
-        else return addType(ctx, DataType.STRING);
+        else if (ctx.STRING() != null) return addType( ctx, DataType.STRING);
+
+        throw new YoltCompilerException("Unsupported datatype found in prompt!");
     }
 
     @Override
     public DataType visitRandom_input(YoltParser.Random_inputContext ctx) {
 
-        if (visit(ctx.expr()) == DataType.INT || visit(ctx.expr()) == DataType.COINS)
+        if (visit(ctx.expr()) == DataType.INT)
         {
             return addType( ctx, DataType.INT);
+        } else if (visit(ctx.expr()) == DataType.COINS)
+        {
+            return addType(ctx, DataType.COINS);
+        } else if (visit(ctx.expr()) == DataType.BOOLEAN)
+        {
+            return addType(ctx, DataType.BOOLEAN);
         }
-        throw new YoltCompilerException("Random input has to be either INT or COIN");
-    }
+
+        throw new YoltCompilerException("Random input has to be of either INT, Boolean or COIN");
+    } ///TODO check in codeGenerator that it works for all 3 values.
 
     @Override
     public DataType visitBreak_statement(YoltParser.Break_statementContext ctx) {
-        //TODO ADD BREAK STATEMENT CHECKER! SHOULD ONLY BE ABLE TO EXIST WITHIN A LOOP!
+
+        boolean insideLoop = false;
+        RuleContext parent = ctx;
+
+        for(int i = 1; i < ctx.depth(); i++)
+        {
+            parent = parent.getParent();
+            if (parent instanceof YoltParser.While_loopContext || parent instanceof YoltParser.Do_while_loopContext)
+            {
+                insideLoop = true;
+                break;
+            }
+        }
+
+        if(!insideLoop) throw new YoltCompilerException("Break statement outside of a loop!");
+
         return null;
     }
 
 
-
-    private FunctionType addFunctionType(ParseTree node, FunctionType type) //TODO Check.
+    private FunctionType addFunctionType(ParseTree node, FunctionType type) //TODO Check if even necessary.
     {
         functionTypes.put(node, type);
         return type;

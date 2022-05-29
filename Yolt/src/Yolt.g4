@@ -42,7 +42,7 @@ expr: (PAREN_OPEN expr PAREN_CLOSE)    # ParanExpression
     | function_call # FunctionExpression
     | IDENTIFIER # VarIdentifier
     | random_input # RandomIdentifier
-    | prompt_input # TextIdentifier
+    | prompt_input # PromptIdentifier
     | INT_VALUE # IntIdentifier
     | BOOLEAN_VALUE # BoolIdentifier
     | COINS_VALUE # CoinIdentifier
