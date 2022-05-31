@@ -400,6 +400,7 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
         else if (ctx.LOGIC_BIGGER_EQUAL() != null) jasminCode.add("if_icmpge true_"+ boolnr);
         else if (ctx.LOGIC_LOWER() != null) jasminCode.add("if_icmplt true_"+ boolnr);
         else if (ctx.LOGIC_LOWER_EQUAL() != null) jasminCode.add("if_icmple true_"+ boolnr);
+        else if (ctx.LOGIC_UNEQUAL() != null) jasminCode.add("if_icmpne true_" + boolnr);
 
         jasminCode.add("iconst_0"); //False
         jasminCode.add("goto endcmp_" + boolnr);
@@ -700,6 +701,13 @@ public class YoltCodeGenerator extends YoltBaseVisitor<Void> {
         jasminCode.add("new java/util/Random");
         jasminCode.add("dup");
         jasminCode.add("invokenonvirtual java/util/Random/<init>()V");
+
+        if(ctx.BOOLEAN() != null)
+        {
+            jasminCode.add("ldc 2");
+            jasminCode.add("invokevirtual java/util/Random/nextInt(I)I");
+            return null;
+        }
 
         if (ctx.expr() != null) {
             visit(ctx.expr());

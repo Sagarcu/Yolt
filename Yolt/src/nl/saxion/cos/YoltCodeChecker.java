@@ -195,7 +195,7 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
         String varName = ctx.IDENTIFIER().getText();
         Symbol s = currentScope.lookupVariable(varName);
         if( s == null )
-            throw new YoltCompilerException("ERROR: The variable [" + varName + "has not been initialized yet.");
+            throw new YoltCompilerException("ERROR: The variable [" + varName + "] has not been initialized yet.");
 
         DataType expressionType = visit(ctx.expr());
         if( s.getType() != expressionType )
@@ -211,7 +211,7 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
         String varName = ctx.IDENTIFIER().getText();
         Symbol s = currentScope.lookupVariable(varName);
         if( s == null )
-            throw new YoltCompilerException("ERROR: The variable [" + varName + "has not been initialized yet.");
+            throw new YoltCompilerException("ERROR: The variable [" + varName + "] has not been initialized yet.");
 
         if(s.getType().equals(DataType.WORDS))
         {
@@ -382,7 +382,29 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
     }
 
     @Override
+    public DataType visitRandomIdentifier(YoltParser.RandomIdentifierContext ctx) {
+        if(ctx.random_input().BOOLEAN() != null)
+        {
+            return addType(ctx, DataType.BOOL);
+        }
+
+        if (visit(ctx.random_input().expr()) == DataType.NUMBERS)
+        {
+            return addType( ctx, DataType.NUMBERS);
+        } else if (visit(ctx.random_input().expr()) == DataType.COINS)
+        {
+            return addType(ctx, DataType.COINS);
+        }
+        throw new YoltCompilerException("ERROR: Random input is of wrong datatype. It has to be of either INT, Boolean or COIN");
+    }
+
+    @Override
     public DataType visitRandom_input(YoltParser.Random_inputContext ctx) {
+
+        if(ctx.BOOLEAN() != null)
+        {
+            return addType(ctx, DataType.BOOL);
+        }
 
         if (visit(ctx.expr()) == DataType.NUMBERS)
         {
@@ -390,13 +412,9 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
         } else if (visit(ctx.expr()) == DataType.COINS)
         {
             return addType(ctx, DataType.COINS);
-        } else if (visit(ctx.expr()) == DataType.BOOL)
-        {
-            return addType(ctx, DataType.BOOL);
         }
-
         throw new YoltCompilerException("ERROR: Random input is of wrong datatype. It has to be of either INT, Boolean or COIN");
-    } ///TODO check in codeGenerator that it works for all 3 values.
+    }
 
     @Override
     public DataType visitBreak_statement(YoltParser.Break_statementContext ctx) {
