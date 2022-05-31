@@ -1,8 +1,9 @@
 package nl.saxion.cos;
 
 public enum DataType {
-    INT,
-    BOOLEAN,
-    STRING,
+    VOID,
+    NUMBERS,
+    BOOL,
+    WORDS,
     COINS
 }

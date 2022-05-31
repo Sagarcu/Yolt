@@ -4,86 +4,24 @@ import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
     private final ParseTreeProperty<DataType> types;
-    private final ParseTreeProperty<FunctionType> functionTypes; //TODO Perhaps remove.
     private final ParseTreeProperty<Symbol> symbols;
-    private final ParseTreeProperty<FunctionSymbol> functionSymbols; //TODO Perhaps remove.
-    private final Map<String, FunctionSymbol> functions;
-
-    private YoltParser parser; //Used temporarily to be able to search through children.
-
-
+    private final Map<String, FunctionSymbol> functions; //I should have done this in a neater way, but its too late for that now!
+    private final ParseTreeProperty<FunctionSymbol> functionSymbols;
 
     private Scope currentScope;
-    private int numLocals = 2; //0 is used for the class. 1 is used for methods. 2 is used for gold calculation.
 
     //TODO LOOK IF THERE ARE ANY MORE THINGS WE WANT TO CHECK?!
     //TODO Consider adding infinite loop checker?
-    public YoltCodeChecker(ParseTreeProperty<DataType> types, ParseTreeProperty<FunctionType> functionType, ParseTreeProperty<Symbol> symbols, ParseTreeProperty<FunctionSymbol> functionSymbols, Map<String, FunctionSymbol> functions, YoltParser parser) {
+    public YoltCodeChecker(ParseTreeProperty<DataType> types, ParseTreeProperty<Symbol> symbols, ParseTreeProperty<FunctionSymbol> functionSymbols, Map<String, FunctionSymbol> functions) {
         this.types = types;
-        this.functionTypes = functionType;
         this.symbols = symbols;
         this.functionSymbols = functionSymbols;
-        this.parser = parser;
         this.functions = functions;
         currentScope = new Scope();
-    }
-
-    @Override
-    public DataType visitVar_declaration(YoltParser.Var_declarationContext ctx) {
-        String varName = ctx.IDENTIFIER().toString();
-        DataType type;
-
-        if (ctx.INT() != null) type = DataType.INT;
-        else if (ctx.COINS() != null) type = DataType.COINS;
-        else if (ctx.BOOLEAN() != null) type = DataType.BOOLEAN;
-        else type = DataType.STRING;
-
-        if (ctx.expr() != null)
-        {
-            visit(ctx.expr()); //Look if the possible expression is correct.
-        }
-
-        Symbol s = currentScope.lookupVariable(varName);
-        if( s != null )
-            throw new YoltCompilerException("The variable " + varName + " has already been initialized.");
-
-
-        int numLocal = currentScope.getNumLocals();
-        currentScope.declareVariable(new Symbol(varName, type, false, numLocal));
-
-        DataType expressionType = visit(ctx.expr()); //TODO Turn on again!
-        //if( type != expressionType )
-        //    throw new YoltCompilerException("Trying to assign a " + expressionType + " to a " + type + ".");
-
-        symbols.put(ctx, new Symbol(varName, type, false, numLocal));
-        return null;
-    }
-
-    @Override
-    public DataType visitFunction_call(YoltParser.Function_callContext ctx) {
-        String functionName = ctx.IDENTIFIER().toString();
-
-        FunctionSymbol currentFunction = functions.get(functionName);
-        if(currentFunction == null)
-        {
-            throw new YoltCompilerException("No function named " + functionName + " found!");
-        }
-        for(int i = 0; i < ctx.expr().size(); i++)
-        {
-            visit(ctx.expr(i));
-        }
-
-
-
-        functionSymbols.put(ctx, currentFunction);
-        return null;
     }
 
     @Override
@@ -96,23 +34,49 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
 
         visitChildren(ctx);
 
+        if(ctx.return_statement() != null)
+        {
+            if(!currentFunction.getFunctionType().equals(visit(ctx.return_statement().expr())))
+            {
+                throw new YoltCompilerException("ERROR: Return type of function [" + functionName + "] should be " + currentFunction.getFunctionType() + " but found " + visit(ctx.return_statement().expr()));
+            }
+
+        }
+
         currentScope = currentScope.closeScope();
         return null;
     }
 
     @Override
-    public DataType visitVariables(YoltParser.VariablesContext ctx) {
-        DataType type;
-        if (ctx.STRING() != null) type = DataType.STRING;
-        else if (ctx.COINS() != null) type = DataType.COINS;
-        else if (ctx.BOOLEAN() != null) type = DataType.BOOLEAN;
-        else type = DataType.INT;
+    public DataType visitFunction_call(YoltParser.Function_callContext ctx) {
+        String functionName = ctx.IDENTIFIER().toString();
 
-        int localNum = currentScope.getNumLocals();
+        FunctionSymbol currentFunction = functions.get(functionName);
+        if(currentFunction == null)
+        {
+            throw new YoltCompilerException("ERROR: No function named " + functionName + " has been declared!");
+        }
 
-        currentScope.declareVariable(new Symbol(ctx.IDENTIFIER().toString(), type, false, localNum));
-        symbols.put(ctx, new Symbol(ctx.IDENTIFIER().toString(), type, false, localNum));
+        if(currentFunction.getFunctionType() != DataType.VOID)
+        {
+            throw new YoltCompilerException("ERROR: Function [" + functionName + "] its call doesn't get stored. Please store the value or change the function to not return a value.");
+        }
 
+        for(int i = 0; i < ctx.expr().size(); i++)
+        {
+            visit(ctx.expr(i));
+        }
+
+        for(int i = 0; i < ctx.expr().size(); i++)
+        {
+            if(currentFunction.getTypes().get(i) != types.get(ctx.expr(i)))
+            {
+                throw new YoltCompilerException("ERROR: Function [" + functionName + "] has invalid parameters. Please double check where you call this function.");
+            }
+        }
+
+
+        functionSymbols.put(ctx, currentFunction);
         return null;
     }
 
@@ -124,40 +88,93 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
         FunctionSymbol currentFunction = functions.get(functionName);
         if(currentFunction == null)
         {
-            throw new YoltCompilerException("No function named " + functionName + " found!");
+            throw new YoltCompilerException("ERROR: No function named " + functionName + " has been declared!");
         }
+
+        for(int i = 0; i < ctx.function_call().expr().size(); i++)
+        {
+            visit(ctx.function_call().expr(i));
+        }
+
 
         functionSymbols.put(ctx, currentFunction);
 
-
-        for(int i = 0; i < currentFunction.getTypes().size(); i++)
+        for(int i = 0; i < ctx.function_call().expr().size(); i++)
         {
-            //TODO TYPECHECK THE EXTRA VARIABLES IT RECEIVES!
-            //if(currentFunction.getTypes().get(i) != ctx.function_call().expr(i))
+            if(currentFunction.getTypes().get(i) != types.get(ctx.function_call().expr(i)))
+            {
+                throw new YoltCompilerException("ERROR: Function [" + functionName + "] has invalid parameters. Please double check where you call this function.");
+            }
         }
 
+        if(currentFunction.getFunctionType().equals(DataType.NUMBERS)) return addType(ctx, DataType.NUMBERS);
+        else if (currentFunction.getFunctionType().equals(DataType.WORDS))  return addType(ctx, DataType.WORDS);
+        else if (currentFunction.getFunctionType().equals(DataType.COINS))  return addType(ctx, DataType.COINS);
+        else if (currentFunction.getFunctionType().equals(DataType.BOOL))  return addType(ctx, DataType.BOOL);
 
-        //Check for missing variables.
-        //Find out what kind of value it is expecting back! We have to do this by saving our functions and then finding the name and then reading the type to get the correct type.
+        return null;
+    }
 
-        //return super.visitFunctionExpression(ctx);
+    @Override
+    public DataType visitVar_declaration(YoltParser.Var_declarationContext ctx) {
+        String varName = ctx.IDENTIFIER().toString();
+        DataType type;
+
+        if (ctx.INT() != null) type = DataType.NUMBERS;
+        else if (ctx.COINS() != null) type = DataType.COINS;
+        else if (ctx.BOOLEAN() != null) type = DataType.BOOL;
+        else type = DataType.WORDS;
+
+        if (ctx.expr() != null)
+        {
+            visit(ctx.expr());
+        }
+
+        Symbol s = currentScope.lookupVariable(varName);
+        if( s != null )
+            throw new YoltCompilerException("ERROR: Variable [" + varName + "] has already been initialized.");
+
+
+        int numLocal = currentScope.getNumLocals();
+        currentScope.declareVariable(new Symbol(varName, type, false, numLocal));
+
+        DataType expressionType = visit(ctx.expr());
+        if( type != expressionType )
+            throw new YoltCompilerException("ERROR: Trying to assign + " + expressionType + " to [" + varName + "] which has the type of " + type + ".");
+
+        symbols.put(ctx, new Symbol(varName, type, false, numLocal));
+        return null;
+    }
+
+    @Override
+    public DataType visitVariables(YoltParser.VariablesContext ctx) {
+        DataType type;
+        if (ctx.STRING() != null) type = DataType.WORDS;
+        else if (ctx.COINS() != null) type = DataType.COINS;
+        else if (ctx.BOOLEAN() != null) type = DataType.BOOL;
+        else type = DataType.NUMBERS;
+
+        int localNum = currentScope.getNumLocals();
+
+        currentScope.declareVariable(new Symbol(ctx.IDENTIFIER().toString(), type, false, localNum));
+        symbols.put(ctx, new Symbol(ctx.IDENTIFIER().toString(), type, false, localNum));
+
         return null;
     }
 
     @Override
     public DataType visitGlobal_var_declaration(YoltParser.Global_var_declarationContext ctx) {
-        //TODO COME UP WITH WHAT NEEDS TO BE DONE HERE! Also think about static or remove static.
         String varName = ctx.IDENTIFIER().toString();
         DataType type;
 
-        if (ctx.INT() != null) type = DataType.INT;
+        if (ctx.INT() != null) type = DataType.NUMBERS;
         else if (ctx.COINS() != null) type = DataType.COINS;
-        else if (ctx.BOOLEAN() != null) type = DataType.BOOLEAN;
-        else type = DataType.STRING;
+        else if (ctx.BOOLEAN() != null) type = DataType.BOOL;
+        else type = DataType.WORDS;
 
         Symbol s = currentScope.lookupVariable(varName);
         if( s != null )
-            throw new YoltCompilerException("The variable " + varName + " has already been initialized.");
+            throw new YoltCompilerException("ERROR: The Global variable [" + varName + "] has already been initialized.");
 
 
         currentScope.declareVariable(new Symbol(varName, type, true, -1)); //Global variable doesn't need a numLocal.
@@ -166,9 +183,9 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
         {
             DataType expressionType = visit(ctx.expr());
             if( type != expressionType )
-                throw new YoltCompilerException("Trying to assign a " + expressionType + " to a " + type + ".");
+                throw new YoltCompilerException("ERROR: Trying to assign + " + expressionType + " to [" + varName + "] which has the type of " + type + ".");
         }
-        symbols.put(ctx, new Symbol(varName, type, true, -1)); //TODO make neater later if it works.
+        symbols.put(ctx, new Symbol(varName, type, true, -1));
 
         return null;
     }
@@ -178,11 +195,11 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
         String varName = ctx.IDENTIFIER().getText();
         Symbol s = currentScope.lookupVariable(varName);
         if( s == null )
-            throw new YoltCompilerException("Undefined variable in assignment: " + varName);
+            throw new YoltCompilerException("ERROR: The variable [" + varName + "has not been initialized yet.");
 
         DataType expressionType = visit(ctx.expr());
         if( s.getType() != expressionType )
-            throw new YoltCompilerException("Assignment type is not correct");
+            throw new YoltCompilerException("ERROR: Trying to assign + " + expressionType + " to [" + varName + "] which has the type of " + s.getType() + ".");
 
         symbols.put(ctx, s);
 
@@ -194,16 +211,21 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
         String varName = ctx.IDENTIFIER().getText();
         Symbol s = currentScope.lookupVariable(varName);
         if( s == null )
-            throw new YoltCompilerException("Undefined variable in assignment: " + varName);
+            throw new YoltCompilerException("ERROR: The variable [" + varName + "has not been initialized yet.");
 
-        if(s.getType().equals(DataType.STRING))
+        if(s.getType().equals(DataType.WORDS))
         {
-            throw new YoltCompilerException("Can't do short expressions on STRING objects.");
+            throw new YoltCompilerException("ERROR: [" + varName + "] Can't do short expressions on STRING objects.");
         }
 
         DataType expressionType = visit(ctx.expr());
         if( s.getType() != expressionType )
-            throw new YoltCompilerException("Assignment type is not correct");
+
+            if (!(expressionType == DataType.COINS || expressionType == DataType.NUMBERS && s.getType() == DataType.COINS || s.getType() == DataType.NUMBERS))
+            {
+                throw new YoltCompilerException("ERROR: Trying to assign + " + expressionType + " to [" + varName + "] which has the type of " + s.getType() + ".");
+            }
+
 
         symbols.put(ctx, s);
         return null;
@@ -214,16 +236,16 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
         DataType expressionType = visit(ctx.expr(0));
         DataType expressionType2 = visit(ctx.expr(1));
 
-        if (expressionType == DataType.STRING && ctx.LOGIC_EQUAL() == null)
+        if (expressionType == DataType.WORDS || expressionType2 == DataType.WORDS)
         {
-            throw new YoltCompilerException("Can't compare " + expressionType);
+            throw new YoltCompilerException("ERROR: Can't compare WORDS");
         }
 
         if(expressionType != expressionType2)
         {
-            if (!(expressionType == DataType.COINS || expressionType == DataType.INT && expressionType2 == DataType.COINS || expressionType2 == DataType.INT))
+            if (!(expressionType == DataType.COINS || expressionType == DataType.NUMBERS && expressionType2 == DataType.COINS || expressionType2 == DataType.NUMBERS))
             {
-                throw new YoltCompilerException("Can't compare on mismatched types [" + expressionType + "] and [" + expressionType2 + "].");
+                throw new YoltCompilerException("ERROR: Can't compare mismatched types " + expressionType + " and " + expressionType2 + ".");
             }
         }
         return super.visitCompare_values(ctx);
@@ -242,7 +264,7 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
             }
         }
 
-        if (!main) throw new YoltCompilerException("No entrypoint found. Please add a FUNCTION main");
+        if (!main) throw new YoltCompilerException("ERROR: No entrypoint found. Please add a FUNCTION main");
 
 
         currentScope = currentScope.openScope();
@@ -256,7 +278,7 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
         Symbol s = currentScope.lookupVariable(ctx.IDENTIFIER().toString());
 
         if (s == null)
-            throw new YoltCompilerException("Variable has not been initialized yet: " + ctx.IDENTIFIER().toString());
+            throw new YoltCompilerException("ERROR: The variable [" + ctx.IDENTIFIER() + "] has not been initialized yet.");
 
         symbols.put(ctx, s);
         types.put(ctx, s.getType());
@@ -265,12 +287,12 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
 
     @Override
     public DataType visitIntIdentifier(YoltParser.IntIdentifierContext ctx) {
-        return addType( ctx, DataType.INT );
+        return addType( ctx, DataType.NUMBERS);
     }
 
     @Override
     public DataType visitBoolIdentifier(YoltParser.BoolIdentifierContext ctx) {
-        return addType( ctx, DataType.BOOLEAN);
+        return addType( ctx, DataType.BOOL);
     }
 
     @Override
@@ -280,9 +302,8 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
 
     @Override
     public DataType visitStringIdentifier(YoltParser.StringIdentifierContext ctx) {
-        return addType( ctx, DataType.STRING );
+        return addType( ctx, DataType.WORDS);
     }
-
 
     @Override
     public DataType visitParanExpression(YoltParser.ParanExpressionContext ctx) {
@@ -295,37 +316,38 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
         DataType leftType = visit(ctx.left);
         DataType rightType = visit(ctx.right);
 
-        if (leftType == DataType.STRING || rightType == DataType.STRING)
+        if (leftType == DataType.WORDS || rightType == DataType.WORDS)
         {
-            throw new YoltCompilerException("Can't do POW/MOD on String expressions.");
+            throw new YoltCompilerException("ERROR: Can't do POW/MOD expressions on WORDS.");
         }
 
         if(leftType != rightType)
         {
-            if (!(leftType == DataType.COINS || leftType == DataType.INT && rightType == DataType.COINS || rightType == DataType.INT))
+            if (!(leftType == DataType.COINS || leftType == DataType.NUMBERS && rightType == DataType.COINS || rightType == DataType.NUMBERS))
             {
-                throw new YoltCompilerException("Can't do mathematical expressions on mismatched types [" + leftType + "] and [" + rightType + "].");
+                throw new YoltCompilerException("ERROR: Can't do mathematical expressions on mismatched types [" + leftType + "] and [" + rightType + "].");
             }
         }
+        //Check that the right number is bigger then zero.
 
         return addType(ctx, leftType);
-    } //TODO Create CodeGen stuff for POW.
+    }
 
     @Override
     public DataType visitMulDivExpression(YoltParser.MulDivExpressionContext ctx) {
         DataType leftType = visit(ctx.left);
         DataType rightType = visit(ctx.right);
 
-        if (leftType == DataType.STRING || rightType == DataType.STRING)
+        if (leftType == DataType.WORDS || rightType == DataType.WORDS)
         {
-            throw new YoltCompilerException("Can't do MUL/DIV on String expressions.");
+            throw new YoltCompilerException("ERROR: Can't do MUL/DIV expressions on WORDS.");
         }
 
         if(leftType != rightType)
         {
-            if (!(leftType == DataType.COINS || leftType == DataType.INT && rightType == DataType.COINS || rightType == DataType.INT))
+            if (!(leftType == DataType.COINS || leftType == DataType.NUMBERS && rightType == DataType.COINS || rightType == DataType.NUMBERS))
             {
-                throw new YoltCompilerException("Can't do mathematical expressions on mismatched types [" + leftType + "] and [" + rightType + "].");
+                throw new YoltCompilerException("ERROR: Can't do mathematical expressions on mismatched types [" + leftType + "] and [" + rightType + "].");
             }
         }
         return addType(ctx, leftType);
@@ -336,45 +358,44 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
         DataType leftType = visit(ctx.left);
         DataType rightType = visit(ctx.right);
 
-        if (leftType == DataType.STRING || rightType == DataType.STRING)
+        if (leftType == DataType.WORDS || rightType == DataType.WORDS)
         {
             if (ctx.SUB() != null)
             {
-                throw new YoltCompilerException("Can't do SUB String expressions.");
+                throw new YoltCompilerException("ERROR: Can't do SUB expressions on WORDS.");
             }
-            return addType(ctx, DataType.STRING); //We always return a string if we try to add them together!
-        } else if (!(leftType == DataType.COINS || leftType == DataType.INT) && !(rightType == DataType.INT || rightType == DataType.COINS))
+            return addType(ctx, DataType.WORDS); //We always return a string if we try to add them together!
+        } else if (!(leftType == DataType.COINS || leftType == DataType.NUMBERS) && !(rightType == DataType.NUMBERS || rightType == DataType.COINS))
         {
-            throw new YoltCompilerException("Can't do mathematical expressions on mismatched types [" + leftType + "] and [" + rightType + "].");
+            throw new YoltCompilerException("ERROR Can't do mathematical expressions on mismatched types [" + leftType + "] and [" + rightType + "].");
         }
 
         return addType(ctx, leftType);
     }
 
-
     @Override
-    public DataType visitPrompt_input(YoltParser.Prompt_inputContext ctx) { //TODO check why it does work with number but not with int.
-        if (ctx.INT() != null) return addType( ctx, DataType.INT);
-        else if (ctx.STRING() != null) return addType( ctx, DataType.STRING);
+    public DataType visitPrompt_input(YoltParser.Prompt_inputContext ctx) {
+        if (ctx.INT() != null) return addType( ctx, DataType.NUMBERS);
+        else if (ctx.STRING() != null) return addType( ctx, DataType.WORDS);
 
-        throw new YoltCompilerException("Unsupported datatype found in prompt!");
+        throw new YoltCompilerException("ERROR: Unsupported datatype found in prompt.");
     }
 
     @Override
     public DataType visitRandom_input(YoltParser.Random_inputContext ctx) {
 
-        if (visit(ctx.expr()) == DataType.INT)
+        if (visit(ctx.expr()) == DataType.NUMBERS)
         {
-            return addType( ctx, DataType.INT);
+            return addType( ctx, DataType.NUMBERS);
         } else if (visit(ctx.expr()) == DataType.COINS)
         {
             return addType(ctx, DataType.COINS);
-        } else if (visit(ctx.expr()) == DataType.BOOLEAN)
+        } else if (visit(ctx.expr()) == DataType.BOOL)
         {
-            return addType(ctx, DataType.BOOLEAN);
+            return addType(ctx, DataType.BOOL);
         }
 
-        throw new YoltCompilerException("Random input has to be of either INT, Boolean or COIN");
+        throw new YoltCompilerException("ERROR: Random input is of wrong datatype. It has to be of either INT, Boolean or COIN");
     } ///TODO check in codeGenerator that it works for all 3 values.
 
     @Override
@@ -393,16 +414,9 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
             }
         }
 
-        if(!insideLoop) throw new YoltCompilerException("Break statement outside of a loop!");
+        if(!insideLoop) throw new YoltCompilerException("ERROR: Found break statement outside of a loop!");
 
         return null;
-    }
-
-
-    private FunctionType addFunctionType(ParseTree node, FunctionType type) //TODO Check if even necessary.
-    {
-        functionTypes.put(node, type);
-        return type;
     }
 
     private DataType addType(ParseTree node, DataType type) {

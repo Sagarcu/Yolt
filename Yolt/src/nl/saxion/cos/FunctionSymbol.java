@@ -3,11 +3,12 @@ package nl.saxion.cos;
 import java.util.ArrayList;
 
 public class FunctionSymbol {
-    private String name;
-    private FunctionType functionType;
-    private ArrayList<DataType> types;
+    private final String name;
+    private final DataType functionType;
+    private final ArrayList<DataType> types;
 
-    public FunctionSymbol(String name, FunctionType functionType, ArrayList<DataType> types) {
+    public FunctionSymbol(String name, DataType functionType, ArrayList<DataType> types) {
+        this.name = name;
         this.functionType = functionType;
         this.types = types;
     }
@@ -16,7 +17,7 @@ public class FunctionSymbol {
         return name;
     }
 
-    public FunctionType getFunctionType() {
+    public DataType getFunctionType() {
         return functionType;
     }
 

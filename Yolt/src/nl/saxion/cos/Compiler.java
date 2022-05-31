@@ -19,12 +19,9 @@ public class Compiler {
 	 * The number of errors detected by the lexer and parser.
 	 */
 	private int errorCount = 0;
-	private ParseTreeProperty<FunctionType> functionType = new ParseTreeProperty<>();
-	private ParseTreeProperty<DataType> types = new ParseTreeProperty<>();
-	private ParseTreeProperty<Symbol> symbols = new ParseTreeProperty<>();
-	private ParseTreeProperty<FunctionSymbol> functionSymbols = new ParseTreeProperty<>();
-	private Map<String, FunctionSymbol> functions = new HashMap<>();
-	private YoltParser parser;
+	private final ParseTreeProperty<DataType> types = new ParseTreeProperty<>();
+	private final ParseTreeProperty<Symbol> symbols = new ParseTreeProperty<>();
+	private final ParseTreeProperty<FunctionSymbol> functionSymbols = new ParseTreeProperty<>();
 
 	/**
 	 * Compiles a complete source code file.
@@ -89,7 +86,7 @@ public class Compiler {
 		lexer.addErrorListener(getErrorListener());
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 
-		parser = new YoltParser(tokens);
+		YoltParser parser = new YoltParser(tokens);
 		parser.addErrorListener(getErrorListener());
 
 		return parser.application();
@@ -106,9 +103,9 @@ public class Compiler {
 		try {
 			YoltFunctionChecker functionChecker = new YoltFunctionChecker();
 			functionChecker.visit(parseTree);
-			functions = functionChecker.getFunctionSymbols(); //Get all our functions that are declared!
+			Map<String, FunctionSymbol> functions = functionChecker.getFunctionSymbols(); //Get all our functions that are declared, which we need in the codeChecker.
 
-			YoltCodeChecker checker = new YoltCodeChecker(types, functionType, symbols, functionSymbols, functions, parser);
+			YoltCodeChecker checker = new YoltCodeChecker(types, symbols, functionSymbols, functions);
 			checker.visit(parseTree);
 			return true;
 		} catch( YoltCompilerException ce ) {
@@ -127,7 +124,7 @@ public class Compiler {
 	private JasminBytecode generateCode( ParseTree parseTree, String className ) {
 		JasminBytecode jasminBytecode = new JasminBytecode( className );
 
-		YoltCodeGenerator codeGenerator = new YoltCodeGenerator(types, symbols, functionType, functionSymbols, className);
+		YoltCodeGenerator codeGenerator = new YoltCodeGenerator(types, symbols, functionSymbols, className);
 		codeGenerator.visit(parseTree);
 
 		for(String codeLine : codeGenerator.getJasminCode()) {
