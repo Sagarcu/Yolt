@@ -1,0 +1,95 @@
+FUNCTION Class() //* Initializing class for our file which is named class.exLang
+{
+SPEAK("Hello, this is a simple application that tests some statements and functions.");
+}
+
+FUNCTION main()
+{
+SPEAK("Calculating normalizedPressure. It should result in a value smaller then 11000");
+NUMBER normalizedPressure = calculateNormalizedKPA(40, 11000);
+SPEAK(normalizedPressure);
+SPEAK(" ");
+
+SPEAK("Calculating normalizedPressure. It should result in a value smaller then the previous one");
+SPEAK(calculateNormalizedKPA(60, 11000));
+SPEAK(" ");
+
+SPEAK("Divide 212 Gold coins and a few bronze and silver coins between 5 people.");
+SPEAK(divideCoins(212G_40S_11B, 5));
+SPEAK(" ");
+
+SPEAK("Divide 5000 Gold coins and a few bronze and silver coins between 42 people.");
+SPEAK(divideCoins(5000G_40S_11B, 42));
+SPEAK(" ");
+
+SPEAK("Divide 212G between only yourself, should result in special message!");
+SPEAK(divideCoins(212G_40S_11B, 1));
+SPEAK(" ");
+
+SPEAK("Divide 50B between 1000 people, should result in special message!");
+SPEAK(divideCoins(50B, 1000));
+SPEAK(" ");
+
+SPEAK("Crazy statement should result in: Crazy statement is true.");
+testCrazyStatements(10, 35, 5);
+SPEAK(" ");
+
+SPEAK("Crazy statement should result in: Crazy statement is true.");
+testCrazyStatements(20, 24, 10);
+SPEAK(" ");
+
+SPEAK("Crazy statement should result in: Crazy statement is true.");
+testCrazyStatements(20, 10, 3000);
+SPEAK(" ");
+
+SPEAK("Crazy statement should result in num 1, 2 and 3 are smaller then 5!");
+testCrazyStatements(1, 3, 4);
+SPEAK(" ");
+
+SPEAK("Crazy statement should result in num 1 is smaller then 5!");
+testCrazyStatements(1, 30, 4);
+SPEAK(" ");
+
+SPEAK("Crazy statement should result in: Doesn't apply to anything.");
+testCrazyStatements(30, 10, 50);
+SPEAK(" ");
+}
+
+FUNCTION NUMBER calculateNormalizedKPA(NUMBER temperature, NUMBER pressureKPA)
+{
+pressureKPA = pressureKPA * 293;
+temperature += 273;
+RETURN(pressureKPA / temperature);
+}
+
+FUNCTION COINS divideCoins(COINS total, NUMBER amountOfPeople)
+{
+IF(total < 100B):
+{
+SPEAK("Get more money dummy.");
+amountOfPeople = 1;
+} ELSE IF (amountOfPeople <= 1):
+{
+SPEAK("Why are you even dividing with only yourself? Kinda weird");
+amountOfPeople = 1;
+}
+
+RETURN(total/amountOfPeople);
+}
+
+FUNCTION testCrazyStatements(NUMBER num1, NUMBER num2, NUMBER num3)
+{
+  IF(num1 > 5 && num1 < 15 || num2 > 15 && num2 < 30 && num2 < 25 || num3 > 1000):
+  {
+  SPEAK("Crazy statement is true!");
+  }ELSE IF (num1 < 5 && num2 < 5 && num3 < 5):
+  {
+  SPEAK("Num 1, 2 and 3 are all smaller then 5!");
+  }ELSE IF (num1 < 5):
+  {
+  SPEAK("Num 1 is smaller then 5!");
+  } ELSE: 
+  {
+SPEAK("Doesn't apply to any of the previous statements");
+}
+}
