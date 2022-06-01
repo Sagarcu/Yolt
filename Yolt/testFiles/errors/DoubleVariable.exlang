@@ -1,0 +1,20 @@
+GLOBAL NUMBER num1 = 0;
+
+FUNCTION main()
+{
+    NUMBER num1 = 0; //* num1 is already declared as a global variable.
+    NUMBER num2 = 1;
+    NUMBER num3 = 0;
+
+    SPEAK(num1);
+    SPEAK(num2);
+    
+    REPEAT(num3 < 100): 
+    {
+        num3 = num1 + num2;
+        num1 = num2;
+        num2 = num3;
+        SPEAK(num3);
+    } 
+   SPEAK("DONE");
+}

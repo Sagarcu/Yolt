@@ -1,0 +1,11 @@
+FUNCTION main()
+{
+    COINS money = test(10); //* Should not compile. Function returns Number but expecting COINS
+    SPEAK("DONE");
+}
+
+FUNCTION NUMBER test(NUMBER test)
+{
+    RETURN(10 * test);
+}
+

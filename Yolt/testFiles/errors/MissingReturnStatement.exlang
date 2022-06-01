@@ -1,0 +1,12 @@
+FUNCTION main()
+{
+   COINS money = test(money);
+}
+
+FUNCTION NUMBER test(COINS money)
+{
+money += 10G;
+SPEAK(money);
+//*Missing return statement, so shouldn't compile.
+}
+

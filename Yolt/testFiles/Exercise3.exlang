@@ -1,0 +1,37 @@
+GLOBAL COINS prizeMoney = 5000S;
+
+FUNCTION main()
+{
+  BOOL found = FALSE;
+  SPEAK("HELLO, WELCOME TO GUESS THE NUMBER!");
+  NUMBER amountOfGuesses = 0;
+  NUMBER toGuess = RANDOM(100);
+  
+  REPEAT(amountOfGuesses < 7):
+  {
+    amountOfGuesses += 1;
+    SPEAK("IF YOU GUESS IT CORRECT THIS TURN YOU WILL GET " + prizeMoney + "! ");
+    NUMBER guess = TELL(NUMBER);
+    IF(guess > toGuess):
+    {
+      SPEAK("YOUR GUESS IS TOO HIGH!");
+    }
+    ELSE IF(guess < toGuess):
+    {
+      SPEAK("YOUR GUESS IS TOO LOW!");
+    }
+    ELSE:
+    {
+    SPEAK("You guessed the number in " + amountOfGuesses + " tries! Well done! ");
+    SPEAK("You won " + prizeMoney); 
+    found = TRUE;
+    STOP;
+    }
+    prizeMoney /= 2;
+  }
+  
+  IF(found =!= TRUE):
+  {
+    SPEAK("You have failed guess the number, better luck next time!");
+  }
+}

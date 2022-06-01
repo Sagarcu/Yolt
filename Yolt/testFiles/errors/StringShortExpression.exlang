@@ -1,0 +1,6 @@
+FUNCTION main()
+{
+    WORDS tekst = "Hello User ";
+    tekst += 69; //* Should not compile, can't do short expressions on String 
+    SPEAK(tekst);
+}
