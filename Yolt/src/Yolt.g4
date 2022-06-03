@@ -2,10 +2,6 @@ grammar Yolt;
 
 application: global_var_declaration* function_declaration* EOF ;
 
-//TODO's:
-//Consider adding class back to this, so you can decide yourself how your class / main class should be :).
-//Cleanup some code.
-
 function_declaration: FUNCTION (INT | STRING | BOOLEAN | COINS)? IDENTIFIER PAREN_OPEN (variables (COMMA variables)*)? PAREN_CLOSE BRACKET_OPEN (statement+ return_statement? | return_statement) BRACKET_CLOSE;
 
 function_call: IDENTIFIER PAREN_OPEN (expr (COMMA expr)*)? PAREN_CLOSE;
@@ -15,7 +11,6 @@ var_declaration: (INT | STRING | BOOLEAN | COINS) IDENTIFIER EQUALS expr SEMICOL
 
 var_assignment: IDENTIFIER EQUALS expr SEMICOLON;
 var_assignment_short: IDENTIFIER (POW | MOD | MUL | DIV | ADD | SUB) EQUALS expr SEMICOLON;
-
 
 prompt_input: PROMPT PAREN_OPEN (INT | STRING) PAREN_CLOSE;
 random_input: RANDOM PAREN_OPEN (expr? | BOOLEAN) PAREN_CLOSE;

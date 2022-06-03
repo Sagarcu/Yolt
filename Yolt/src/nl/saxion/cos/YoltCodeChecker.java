@@ -9,13 +9,10 @@ import java.util.Map;
 public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
     private final ParseTreeProperty<DataType> types;
     private final ParseTreeProperty<Symbol> symbols;
-    private final Map<String, FunctionSymbol> functions; //I should have done this in a neater way, but its too late for that now!
+    private final Map<String, FunctionSymbol> functions; //I could've done this in the same way as before with Symbols, but i didn't.
     private final ParseTreeProperty<FunctionSymbol> functionSymbols;
-
     private Scope currentScope;
 
-    //TODO LOOK IF THERE ARE ANY MORE THINGS WE WANT TO CHECK?!
-    //TODO Consider adding infinite loop checker?
     public YoltCodeChecker(ParseTreeProperty<DataType> types, ParseTreeProperty<Symbol> symbols, ParseTreeProperty<FunctionSymbol> functionSymbols, Map<String, FunctionSymbol> functions) {
         this.types = types;
         this.symbols = symbols;
@@ -403,7 +400,7 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
 
         if(ctx.BOOLEAN() != null)
         {
-            return addType(ctx, DataType.BOOL);
+            return addType(ctx, DataType.BOOL); //This is the case of boolean, with Numbers and Coins we can do something else.
         }
 
         if (visit(ctx.expr()) == DataType.NUMBERS)
@@ -422,7 +419,7 @@ public class YoltCodeChecker extends YoltBaseVisitor<DataType> {
         boolean insideLoop = false;
         RuleContext parent = ctx;
 
-        for(int i = 1; i < ctx.depth(); i++)
+        for(int i = 1; i < ctx.depth(); i++) //Find out how deep we are, we check all our parents to see if they are of the instance of loop / do_while loop. If not the case then throw the error.
         {
             parent = parent.getParent();
             if (parent instanceof YoltParser.While_loopContext || parent instanceof YoltParser.Do_while_loopContext)

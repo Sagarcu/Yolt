@@ -38,9 +38,4 @@ public class Scope {
         return numLocals;
     }
 
-    public void increaseNumLocals()
-    {
-        numLocals += 1;
-    }
-
 }

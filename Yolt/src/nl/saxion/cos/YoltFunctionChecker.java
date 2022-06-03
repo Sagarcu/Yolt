@@ -18,7 +18,7 @@ public class YoltFunctionChecker extends YoltBaseVisitor<DataType> {
     }
 
     @Override
-    public DataType visitFunction_declaration(YoltParser.Function_declarationContext ctx) {
+    public DataType visitFunction_declaration(YoltParser.Function_declarationContext ctx) { //adds all the functions to a list, so we can see if there are any doubles in the codeChecker.
         ArrayList<DataType> dataTypes = new ArrayList<>(); //Fill all extra sent types in here!
         String functionName = ctx.IDENTIFIER().toString();
 
